@@ -17,6 +17,9 @@ public class Cell {
 
     private boolean isGoal = false;
 
+    private int cellValue = 0;
+
+
     public Cell(int xPos, int yPos) {
         this.xPos = xPos;
         this.yPos = yPos;
@@ -91,6 +94,15 @@ public class Cell {
         this.leftBorder = false;
     }
 
+    public int getCellValue() {
+        return this.cellValue;
+    }
+
+    public void setCellValue(int cell_value) {
+        this.cellValue = cell_value;
+    }
+
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -102,4 +114,6 @@ public class Cell {
     public int hashCode() {
         return Objects.hash(getxPos(), getyPos());
     }
+
+
 }
