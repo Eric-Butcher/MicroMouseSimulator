@@ -146,12 +146,6 @@ public class FloodFillSearchSolver extends Solver{
             updatePacket.addTileUpdate(tileUpdate);
         }
 
-        if (targetCell != null) {
-            TileUpdate tileUpdate = Cell.makeTileUpdateFromCell(this.targetCell, false, true);
-            updatePacket.addTileUpdate(tileUpdate);
-        }
-
-
         return updatePacket;
     }
 
