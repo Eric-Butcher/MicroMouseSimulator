@@ -27,6 +27,3 @@ bin/
 
 ### Mac OS ###
 .DS_Store
-
-# Remove .idea folder
-.idea/
