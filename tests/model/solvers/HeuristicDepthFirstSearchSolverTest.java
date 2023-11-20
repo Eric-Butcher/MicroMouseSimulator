@@ -1,3 +1,5 @@
+package model.solvers;
+
 import model.Cell;
 import model.generators.Generator;
 import model.generators.PrimGenerator;

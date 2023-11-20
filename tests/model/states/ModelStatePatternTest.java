@@ -1,3 +1,5 @@
+package model.states;
+
 import model.Model;
 import model.states.GenerateState;
 import model.states.SolveState;

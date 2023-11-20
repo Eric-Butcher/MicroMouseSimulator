@@ -1,3 +1,5 @@
+package model.solvers;
+
 import model.Cell;
 import model.Grid;
 import model.generators.Generator;

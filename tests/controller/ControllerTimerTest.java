@@ -1,3 +1,5 @@
+package controller;
+
 import controller.Controller;
 import model.Model;
 import org.junit.jupiter.api.Test;

@@ -1,3 +1,5 @@
+package model;
+
 import controller.TileUpdate;
 import model.Cell;
 import org.junit.jupiter.api.Test;

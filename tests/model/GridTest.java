@@ -1,3 +1,5 @@
+package model;
+
 import model.Cell;
 import model.Grid;
 import org.junit.jupiter.api.Test;

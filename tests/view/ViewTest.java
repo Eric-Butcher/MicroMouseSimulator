@@ -1,3 +1,5 @@
+package view;
+
 import controller.TileUpdate;
 import controller.ViewUpdatePacket;
 import org.junit.jupiter.api.Test;

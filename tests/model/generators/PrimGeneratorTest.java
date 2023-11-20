@@ -1,5 +1,7 @@
+package model.generators;
+
 import model.Cell;
-import model.generators.AldousBroderGenerator;
+import model.generators.PrimGenerator;
 import org.junit.jupiter.api.Test;
 import utilities.Constants;
 
@@ -7,7 +9,7 @@ import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-public class AldousBroderGeneratorTest {
+public class PrimGeneratorTest {
 
     @Test
     public void testAllTestsMultipleTimes() {
@@ -21,14 +23,14 @@ public class AldousBroderGeneratorTest {
 
     @Test
     public void testAllCellsInitializedAtEnd() {
-        AldousBroderGenerator aldousBroderGenerator = new AldousBroderGenerator();
-        aldousBroderGenerator.finish();
-        assertTrue(aldousBroderGenerator.getDoneGenerating());
+        PrimGenerator primGenerator = new PrimGenerator();
+        primGenerator.finish();
+        assertTrue(primGenerator.getDoneGenerating());
 
 
         for (int x = Constants.minCellIndex; x <= Constants.maxCellIndex; x++) {
             for (int y = Constants.minCellIndex; y <= Constants.maxCellIndex; y++) {
-                assertTrue(aldousBroderGenerator.getGrid().getCell(x, y).isInitialized());
+                assertTrue(primGenerator.getGrid().getCell(x, y).isInitialized());
             }
         }
 
@@ -36,13 +38,13 @@ public class AldousBroderGeneratorTest {
 
     @Test
     public void testNoCellsBlockedAtEnd() {
-        AldousBroderGenerator aldousBroderGenerator = new AldousBroderGenerator();
-        aldousBroderGenerator.finish();
-        assertTrue(aldousBroderGenerator.getDoneGenerating());
+        PrimGenerator primGenerator = new PrimGenerator();
+        primGenerator.finish();
+        assertTrue(primGenerator.getDoneGenerating());
 
         for (int x = Constants.minCellIndex; x <= Constants.maxCellIndex; x++) {
             for (int y = Constants.minCellIndex; y <= Constants.maxCellIndex; y++) {
-                Cell cell = aldousBroderGenerator.getGrid().getCell(x, y);
+                Cell cell = primGenerator.getGrid().getCell(x, y);
                 boolean isBlockedOff = cell.isBottomBorder() && cell.isTopBorder() && cell.isRightBorder() && cell.isLeftBorder();
                 assertFalse(isBlockedOff);
             }
@@ -55,20 +57,20 @@ public class AldousBroderGeneratorTest {
         // other cell by at least one cell, meaning that the maze is solvable from any start and end points.
         // Use simple BFS to try to find every cell.
 
-        AldousBroderGenerator aldousBroderGenerator = new AldousBroderGenerator();
-        aldousBroderGenerator.finish();
-        assertTrue(aldousBroderGenerator.getDoneGenerating());
+        PrimGenerator primGenerator = new PrimGenerator();
+        primGenerator.finish();
+        assertTrue(primGenerator.getDoneGenerating());
 
         Set<Cell> visited = new HashSet<>();
         Queue<Cell> queue = new LinkedList<>();
-        Cell start = aldousBroderGenerator.getGrid().getCell(Constants.minCellIndex, Constants.minCellIndex);
+        Cell start = primGenerator.getGrid().getCell(Constants.minCellIndex, Constants.minCellIndex);
 
         queue.add(start);
         visited.add(start);
         while (!queue.isEmpty()) {
             // Find all reachable neighbors
             Cell current = queue.remove();
-            ArrayList<Cell> neighbors = aldousBroderGenerator.getGrid().getAdjacentCells(current);
+            ArrayList<Cell> neighbors = primGenerator.getGrid().getAdjacentCells(current);
             for (Cell neighbor : neighbors) {
                 if (cellsMutuallyReachable(current, neighbor) && !(visited.contains(neighbor))) {
                     queue.add(neighbor);
