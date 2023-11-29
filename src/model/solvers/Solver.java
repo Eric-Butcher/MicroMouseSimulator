@@ -104,12 +104,12 @@ public abstract class Solver {
         ArrayList<VirtualCell> retVal = new ArrayList<>();
         for (VirtualCell cell : untraversed) {
             try {
-                if (Grid.isTherePathBetweenCells(center, cell)) {
+                if (grid.isTherePathBetweenCells(center, cell)) {
                     retVal.add(cell);
                 }
             }
             catch(Exception e){
-                System.out.println("You have mismatching Cell types");
+                System.out.println("You have incorrect Cell types");
             }
         }
 
@@ -122,12 +122,12 @@ public abstract class Solver {
         ArrayList<VirtualCell> retVal = new ArrayList<>();
         for (VirtualCell cell : traversedCells) {
             try {
-                if (Grid.isTherePathBetweenCells(center, cell)) {
+                if (grid.isTherePathBetweenCells(center, cell)) {
                     retVal.add(cell);
                 }
             }
             catch (Exception e){
-                System.out.println("You have mismatching Cell types");
+                System.out.println("You have incorrect Cell types");
             }
         }
 

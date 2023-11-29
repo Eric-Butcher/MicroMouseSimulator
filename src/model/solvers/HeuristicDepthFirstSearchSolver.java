@@ -128,7 +128,7 @@ public class HeuristicDepthFirstSearchSolver extends Solver {
             }
         }
         catch (Exception e){
-            System.out.println("You have mismatching Cell types");
+            System.out.println("You have incorrect Cell types");
         }
     }
 
