@@ -3,8 +3,10 @@ package model.solvers;
 import controller.TileUpdate;
 import controller.ViewUpdatePacket;
 import model.Cell;
-import utilities.Constants;
 import model.Grid;
+import model.VirtualCell;
+import utilities.Constants;
+
 import java.util.*;
 
 
@@ -12,85 +14,37 @@ public class FloodFillSearchSolver extends Solver{
 
     private int[][] intGrid = new int[16][16];
 
-    private Grid gridCopy = new Grid();
-    private Cell currentCell = startPoint;
+    private Grid<VirtualCell> grid = new Grid<>(VirtualCell.class);
+    private VirtualCell currentCell = startPoint;
 
-    private final Comparator<Cell> hueristicComparator = new Comparator<Cell>() {
-        @Override
-        public int compare(Cell o1, Cell o2) {
-            return Integer.compare(heuristic(o1), heuristic(o2));
-        }
-    };
-
-    public FloodFillSearchSolver(Grid grid){
+    public FloodFillSearchSolver(Grid<VirtualCell> grid) {
         super(grid);
-        for(int i = 0; i < 16; i++){
-            for(int j = 0; j < 16; j++){
-                gridCopy.getCell(i, j).removeTopBorder();
-                gridCopy.getCell(i, j).removeBottomBorder();
-                gridCopy.getCell(i, j).removeLeftBorder();
-                gridCopy.getCell(i, j).removeRightBorder();
-            }
-        }
-
     }
 
-    public FloodFillSearchSolver(Grid grid, Cell startPoint, ArrayList<Cell> endPoints){
+
+    public FloodFillSearchSolver(Grid<VirtualCell> grid, VirtualCell startPoint, ArrayList<VirtualCell> endPoints){
         super(grid, startPoint, endPoints);
     }
-    public Cell getCurrentCell() {
+    public VirtualCell getCurrentCell() {
         return currentCell;
     }
 
-    public Comparator<Cell> getHueristicComparator(){
-        return hueristicComparator;
-    }
-
-    public int manhattanDistance(Cell current, Cell target) {
-        int dx = Math.abs(current.getxPos() - target.getxPos());
-        int dy = Math.abs(current.getyPos() - target.getyPos());
-        int retVal = dx + dy;
-        return retVal;
-    }
-
-    public int heuristic(Cell cell) {
-        int minDistance = Integer.MAX_VALUE;
-        int calculatedDistance = 0;
-        for (Cell target : this.endPoints) {
-            calculatedDistance = manhattanDistance(cell, target);
-            minDistance = Math.min(minDistance, calculatedDistance);
-        }
-        return minDistance;
-    }
-
-    public ArrayList<Cell> getGridCopyEndpoints(){
-        ArrayList<Cell> ends = new ArrayList<>();
-        if ((Constants.mazeLength % 2) == 0) {
-            ends.add(this.gridCopy.getCell(Constants.maxCellIndex / 2, Constants.maxCellIndex / 2));
-            ends.add(this.gridCopy.getCell(Constants.maxCellIndex / 2 + 1, Constants.maxCellIndex / 2));
-            ends.add(this.gridCopy.getCell(Constants.maxCellIndex / 2, Constants.maxCellIndex / 2 + 1));
-            ends.add(this.gridCopy.getCell(Constants.maxCellIndex / 2 + 1, Constants.maxCellIndex / 2 + 1));
-        } else {
-            ends.add(this.gridCopy.getCell(Constants.maxCellIndex / 2, Constants.maxCellIndex / 2));
-        }
-        return ends;
-    }
     public void fill(){
-        Queue<Cell> cellQueue = new LinkedList<>();
-        HashMap<Cell, Integer> cellToIndexMap = new HashMap<>();
-        HashSet<Cell> queueSet = new HashSet<>();
-        for(Cell endPoints: this.getGridCopyEndpoints()){
+        Queue<VirtualCell> cellQueue = new LinkedList<>();
+        HashMap<VirtualCell, Integer> cellToIndexMap = new HashMap<>();
+        HashSet<VirtualCell> queueSet = new HashSet<>();
+        for(VirtualCell endPoints: this.getEndPoints()){
             cellQueue.add(endPoints);
             cellToIndexMap.put(endPoints, 0);
             queueSet.add(endPoints);
         }
         while(!cellQueue.isEmpty()){
-            Cell c = cellQueue.poll();
+            VirtualCell c = cellQueue.poll();
             c.setTraversed(true);
             queueSet.remove(c);
-            for(Cell neighbors : getUntraversedReachableNeighborsGridCopy(c)){
+            for(VirtualCell neighbors : getUntraversedReachableNeighbors(c)){
                 boolean isAnEndpoint = false;
-                for(Cell ep : this.getGridCopyEndpoints()){
+                for(VirtualCell ep : this.getEndPoints()){
                     if (neighbors.equals(ep)) {
                         isAnEndpoint = true;
                         break;
@@ -110,20 +64,6 @@ public class FloodFillSearchSolver extends Solver{
         }
     }
 
-    public ArrayList<Cell> getUntraversedReachableNeighborsGridCopy(Cell center) {
-        ArrayList<Cell> adjacents = this.gridCopy.getAdjacentCells(center);
-        ArrayList<Cell> untraversed = getUnTraversedCells(adjacents);
-        //System.out.println("center = " + center.getxPos() + " , " + center.getyPos());
-        ArrayList<Cell> retVal = new ArrayList<>();
-        for (Cell cell : untraversed) {
-            //System.out.println("neighbors are: " + cell.getxPos() + " , " + cell.getyPos());
-            if (Grid.isTherePathBetweenCells(center, cell)) {
-                retVal.add(cell);
-            }
-        }
-        return retVal;
-    }
-
     @Override
     public ViewUpdatePacket makeViewUpdatePacket() {
         ViewUpdatePacket updatePacket = new ViewUpdatePacket(new ArrayList<>(300));
@@ -132,17 +72,17 @@ public class FloodFillSearchSolver extends Solver{
         for (int x = Constants.minCellIndex; x <= Constants.maxCellIndex; x++) {
             for (int y = Constants.minCellIndex; y <= Constants.maxCellIndex; y++) {
 
-                Cell cell = this.getGrid().getCell(x, y);
+                VirtualCell cell = this.getGrid().getCell(x, y);
 
 
-                TileUpdate tileUpdate = Cell.makeTileUpdateFromCell(cell, false, false);
+                TileUpdate tileUpdate = VirtualCell.makeTileUpdateFromCell(cell, false, false);
                 updatePacket.addTileUpdate(tileUpdate);
             }
         }
 
         // Add the current cell at the end, will override its earlier addition
         if (currentCell != null) {
-            TileUpdate tileUpdate = Cell.makeTileUpdateFromCell(this.getCurrentCell(), true, false);
+            TileUpdate tileUpdate = VirtualCell.makeTileUpdateFromCell(this.getCurrentCell(), true, false);
             updatePacket.addTileUpdate(tileUpdate);
         }
 

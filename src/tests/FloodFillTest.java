@@ -1,5 +1,6 @@
 package tests;
 
+import model.VirtualCell;
 import model.Grid;
 import model.solvers.FloodFillSearchSolver;
 import utilities.Constants;
@@ -11,7 +12,7 @@ public class FloodFillTest {
     }
 
     public static void initialGridTest(){
-        Grid grid = new Grid();
+        Grid<VirtualCell> grid = new Grid(VirtualCell.class);
         FloodFillSearchSolver ff = new FloodFillSearchSolver(grid);
         ff.fill();
         int[][] ints = ff.getIntGrid();

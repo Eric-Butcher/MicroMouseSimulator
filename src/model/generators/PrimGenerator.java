@@ -2,14 +2,14 @@ package model.generators;
 
 import controller.TileUpdate;
 import controller.ViewUpdatePacket;
-import model.Cell;
+import model.RealityCell;
 import utilities.Constants;
 
 import java.util.ArrayList;
 
 public class PrimGenerator extends Generator {
 
-    private final ArrayList<Cell> frontier = new ArrayList<>(Constants.mazeLength * Constants.mazeLength);
+    private final ArrayList<RealityCell> frontier = new ArrayList<>(Constants.mazeLength * Constants.mazeLength);
 
     private boolean startStepDone = false;
 
@@ -17,7 +17,7 @@ public class PrimGenerator extends Generator {
         super();
     }
 
-    public ArrayList<Cell> getFrontier() {
+    public ArrayList<RealityCell> getFrontier() {
         return frontier;
     }
 
@@ -37,10 +37,10 @@ public class PrimGenerator extends Generator {
         for (int x = Constants.minCellIndex; x <= Constants.maxCellIndex; x++) {
             for (int y = Constants.minCellIndex; y <= Constants.maxCellIndex; y++) {
 
-                Cell cell = this.getGrid().getCell(x, y);
+                RealityCell cell = this.getGrid().getCell(x, y);
                 inFrontier = frontier.contains(cell);
 
-                TileUpdate tileUpdate = Cell.makeTileUpdateFromCell(cell, false, inFrontier);
+                TileUpdate tileUpdate = RealityCell.makeTileUpdateFromCell(cell, false, inFrontier);
                 updatePacket.addTileUpdate(tileUpdate);
             }
         }
@@ -48,9 +48,9 @@ public class PrimGenerator extends Generator {
     }
 
     private void startStep() {
-        Cell startCell = this.getGrid().getRandomGridCell();
+        RealityCell startCell = this.getGrid().getRandomGridCell();
         startCell.initializeCell();
-        ArrayList<Cell> adjacentCells = this.getGrid().getAdjacentCells(startCell);
+        ArrayList<RealityCell> adjacentCells = this.getGrid().getAdjacentCells(startCell);
         this.getFrontier().addAll(adjacentCells);
         this.setStartStepDone(true);
     }
@@ -62,14 +62,14 @@ public class PrimGenerator extends Generator {
             this.setDone();
         } else {
 //            1. Pop a cell from the frontier list randomly.
-            Cell chosen = Generator.popRandomCellFromList(this.getFrontier());
+            RealityCell chosen = Generator.popRandomCellFromList(this.getFrontier());
 
 //            2. Generate a list of all adjacent cells that are initialized.
-            ArrayList<Cell> adjacentCells = this.getGrid().getAdjacentCells(chosen);
-            ArrayList<Cell> initializedNeighbors = Generator.getInitializedCells(adjacentCells);
+            ArrayList<RealityCell> adjacentCells = this.getGrid().getAdjacentCells(chosen);
+            ArrayList<RealityCell> initializedNeighbors = Generator.getInitializedCells(adjacentCells);
 
 //          3. Pick one of these initialized cells at random.
-            Cell initializedNeighbor = Generator.popRandomCellFromList(initializedNeighbors);
+            RealityCell initializedNeighbor = Generator.popRandomCellFromList(initializedNeighbors);
 
 //          4. Form a path (delete the wall/s ) between the frontier cell and the initialized cell.
             this.getGrid().createPathBetweenCells(chosen, initializedNeighbor);
@@ -77,8 +77,8 @@ public class PrimGenerator extends Generator {
 //          5. Set the frontier cell as initialized.
             chosen.initializeCell();
 
-            ArrayList<Cell> uninitializedNeighbors = Generator.getUnInitializedCells(adjacentCells);
-            for (Cell uninitialized : uninitializedNeighbors) {
+            ArrayList<RealityCell> uninitializedNeighbors = Generator.getUnInitializedCells(adjacentCells);
+            for (RealityCell uninitialized : uninitializedNeighbors) {
                 if (!this.getFrontier().contains(uninitialized)) {
                     this.getFrontier().add(uninitialized);
                 }

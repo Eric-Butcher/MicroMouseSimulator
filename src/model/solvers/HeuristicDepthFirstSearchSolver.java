@@ -4,6 +4,7 @@ import controller.TileUpdate;
 import controller.ViewUpdatePacket;
 import model.Cell;
 import model.Grid;
+import model.VirtualCell;
 import utilities.Constants;
 
 import java.util.*;
@@ -17,21 +18,21 @@ public class HeuristicDepthFirstSearchSolver extends Solver {
         }
     };
     // The child is the key and the parent is the value
-    private final HashMap<Cell, Cell> parentCells = new HashMap<>(Constants.mazeLength * Constants.mazeLength);
-    private final Stack<Cell> stack = new Stack<>();
+    private final HashMap<VirtualCell, VirtualCell> parentCells = new HashMap<>(Constants.mazeLength * Constants.mazeLength);
+    private final Stack<VirtualCell> stack = new Stack<>();
     private boolean startStepDone = false;
-    private Cell currentCell;
-    private Cell targetCell;
+    private VirtualCell currentCell;
+    private VirtualCell targetCell;
 
-    public HeuristicDepthFirstSearchSolver(Grid grid) {
+    public HeuristicDepthFirstSearchSolver(Grid<VirtualCell> grid) {
         super(grid);
     }
 
-    public HeuristicDepthFirstSearchSolver(Grid grid, Cell startPoint, ArrayList<Cell> endPoints) {
+    public HeuristicDepthFirstSearchSolver(Grid<VirtualCell> grid, VirtualCell startPoint, ArrayList<VirtualCell> endPoints) {
         super(grid, startPoint, endPoints);
     }
 
-    public Cell getCurrentCell() {
+    public VirtualCell getCurrentCell() {
         return currentCell;
     }
 
@@ -96,33 +97,38 @@ public class HeuristicDepthFirstSearchSolver extends Solver {
         return minDistance;
     }
 
-    public ArrayList<Cell> generateOrderedStackAppendList(Cell currentCell) {
-        ArrayList<Cell> neighbors = getUntraversedReachableNeighbors(currentCell);
+    public ArrayList<VirtualCell> generateOrderedStackAppendList(VirtualCell currentCell) {
+        ArrayList<VirtualCell> neighbors = getUntraversedReachableNeighbors(currentCell);
         neighbors.sort(Collections.reverseOrder(hueristicComparator)); // We want the closest to be ontop of the stack
         return neighbors;
     }
 
     public void iterate() {
-        if (this.isDone()) {
-        } else if (!startStepDone) {
-            this.currentCell = startPoint;
-            this.currentCell.setTraversed(true);
-            List<Cell> neighbors = generateOrderedStackAppendList(currentCell);
-            this.stack.addAll(neighbors);
-            targetCell = stack.pop();
-            this.setStartStepDone(true);
-        } else if (atDestination(currentCell)) {
-            this.targetCell = null;
-            this.setDone(true);
-        } else if (Grid.isTherePathBetweenCells(currentCell, targetCell)) {
-            parentCells.put(targetCell, currentCell);
-            currentCell = targetCell;
-            currentCell.setTraversed(true);
-            ArrayList<Cell> neighbors = generateOrderedStackAppendList(currentCell);
-            stack.addAll(neighbors);
-            targetCell = stack.pop();
-        } else {
-            currentCell = parentCells.get(currentCell);
+        try {
+            if (this.isDone()) {
+            } else if (!startStepDone) {
+                this.currentCell = startPoint;
+                this.currentCell.setTraversed(true);
+                List<VirtualCell> neighbors = generateOrderedStackAppendList(currentCell);
+                this.stack.addAll(neighbors);
+                targetCell = stack.pop();
+                this.setStartStepDone(true);
+            } else if (atDestination(currentCell)) {
+                this.targetCell = null;
+                this.setDone(true);
+            } else if (Grid.isTherePathBetweenCells(currentCell, targetCell)) {
+                parentCells.put(targetCell, currentCell);
+                currentCell = targetCell;
+                currentCell.setTraversed(true);
+                ArrayList<Cell> neighbors = generateOrderedStackAppendList(currentCell);
+                stack.addAll(neighbors);
+                targetCell = stack.pop();
+            } else {
+                currentCell = parentCells.get(currentCell);
+            }
+        }
+        catch (Exception e){
+            System.out.println("You have mismatching Cell types");
         }
     }
 

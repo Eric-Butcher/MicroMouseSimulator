@@ -2,7 +2,7 @@ package model.generators;
 
 import controller.TileUpdate;
 import controller.ViewUpdatePacket;
-import model.Cell;
+import model.RealityCell;
 import utilities.Constants;
 
 import java.util.ArrayList;
@@ -11,17 +11,17 @@ public class AldousBroderGenerator extends Generator {
 
     private final int maxInitialized = Constants.mazeLength * Constants.mazeLength;
     private int cellsInitialized = 0;
-    private Cell currentCell;
+    private RealityCell currentCell;
 
     public AldousBroderGenerator() {
         super();
     }
 
-    public Cell getCurrentCell() {
+    public RealityCell getCurrentCell() {
         return currentCell;
     }
 
-    public void setCurrentCell(Cell currentCell) {
+    public void setCurrentCell(RealityCell currentCell) {
         this.currentCell = currentCell;
     }
 
@@ -32,15 +32,15 @@ public class AldousBroderGenerator extends Generator {
         for (int x = Constants.minCellIndex; x <= Constants.maxCellIndex; x++) {
             for (int y = Constants.minCellIndex; y <= Constants.maxCellIndex; y++) {
 
-                Cell cell = this.getGrid().getCell(x, y);
-                TileUpdate tileUpdate = Cell.makeTileUpdateFromCell(cell, false, false);
+                RealityCell cell = this.getGrid().getCell(x, y);
+                TileUpdate tileUpdate = RealityCell.makeTileUpdateFromCell(cell, false, false);
                 updatePacket.addTileUpdate(tileUpdate);
             }
         }
 
         // Add the current cell at the end, will override its earlier addition
         if (currentCell != null) {
-            TileUpdate tileUpdate = Cell.makeTileUpdateFromCell(this.getCurrentCell(), true, false);
+            TileUpdate tileUpdate = RealityCell.makeTileUpdateFromCell(this.getCurrentCell(), true, false);
             updatePacket.addTileUpdate(tileUpdate);
         }
 
@@ -61,8 +61,8 @@ public class AldousBroderGenerator extends Generator {
         } else if (cellsInitialized == 0) {
             this.startStep();
         } else {
-            ArrayList<Cell> neighbors = this.getGrid().getAdjacentCells(currentCell);
-            Cell chosen = popRandomCellFromList(neighbors);
+            ArrayList<RealityCell> neighbors = this.getGrid().getAdjacentCells(currentCell);
+            RealityCell chosen = popRandomCellFromList(neighbors);
             if (!chosen.isInitialized()) {
                 this.getGrid().createPathBetweenCells(currentCell, chosen);
                 chosen.initializeCell();

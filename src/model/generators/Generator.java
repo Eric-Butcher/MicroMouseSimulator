@@ -1,8 +1,8 @@
 package model.generators;
 
 import controller.ViewUpdatePacket;
-import model.Cell;
 import model.Grid;
+import model.RealityCell;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -12,7 +12,7 @@ public abstract class Generator {
 
 //    private Cell[][] grid = new Cell[Constants.mazeLength][Constants.mazeLength];
 
-    private final Grid grid;
+    private final Grid<RealityCell> grid;
 
     private boolean done = false;
 
@@ -25,18 +25,18 @@ public abstract class Generator {
 //            }
 //        }
 
-        this.grid = new Grid();
+        this.grid = new Grid(RealityCell.class);
     }
 
-    public static Cell popRandomCellFromList(List<Cell> list) {
+    public static RealityCell popRandomCellFromList(List<RealityCell> list) {
         Random rand = new Random();
         int randomIndex = rand.nextInt(list.size());
         return list.remove(randomIndex);
     }
 
-    public static ArrayList<Cell> getInitializedCells(List<Cell> list) {
-        ArrayList<Cell> retVal = new ArrayList<>(4);
-        for (Cell cell : list) {
+    public static ArrayList<RealityCell> getInitializedCells(List<RealityCell> list) {
+        ArrayList<RealityCell> retVal = new ArrayList<>(4);
+        for (RealityCell cell : list) {
             if (cell.isInitialized()) {
                 retVal.add(cell);
             }
@@ -44,9 +44,9 @@ public abstract class Generator {
         return retVal;
     }
 
-    public static ArrayList<Cell> getUnInitializedCells(List<Cell> list) {
-        ArrayList<Cell> retVal = new ArrayList<>(4);
-        for (Cell cell : list) {
+    public static ArrayList<RealityCell> getUnInitializedCells(List<RealityCell> list) {
+        ArrayList<RealityCell> retVal = new ArrayList<>(4);
+        for (RealityCell cell : list) {
             if (!cell.isInitialized()) {
                 retVal.add(cell);
             }
@@ -58,7 +58,7 @@ public abstract class Generator {
         this.done = true;
     }
 
-    public Grid getGrid() {
+    public Grid<RealityCell> getGrid() {
         return grid;
     }
 

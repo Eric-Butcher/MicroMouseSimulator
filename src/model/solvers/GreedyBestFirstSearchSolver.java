@@ -4,6 +4,7 @@ import controller.TileUpdate;
 import controller.ViewUpdatePacket;
 import model.Cell;
 import model.Grid;
+import model.VirtualCell;
 import utilities.Constants;
 
 import java.util.*;
@@ -18,18 +19,18 @@ public class GreedyBestFirstSearchSolver extends Solver {
         }
     };
 
-    private final Queue<Cell> queue = new PriorityQueue<>(hueristicComparator);
+    private final Queue<VirtualCell> queue = new PriorityQueue<>(hueristicComparator);
     private boolean startStepDone = false;
-    private Cell currentCell;
-    private Cell targetCell;
+    private VirtualCell currentCell;
+    private VirtualCell targetCell;
 
-    private Stack<Cell> backtrace = new Stack<>();
+    private Stack<VirtualCell> backtrace = new Stack<>();
 
-    public GreedyBestFirstSearchSolver(Grid grid) {
+    public GreedyBestFirstSearchSolver(Grid<VirtualCell> grid) {
         super(grid);
     }
 
-    public GreedyBestFirstSearchSolver(Grid grid, Cell startPoint, ArrayList<Cell> endPoints) {
+    public GreedyBestFirstSearchSolver(Grid<VirtualCell> grid, VirtualCell startPoint, ArrayList<VirtualCell> endPoints) {
         super(grid, startPoint, endPoints);
     }
 
@@ -56,19 +57,19 @@ public class GreedyBestFirstSearchSolver extends Solver {
                 Cell cell = this.getGrid().getCell(x, y);
 
 
-                TileUpdate tileUpdate = Cell.makeTileUpdateFromCell(cell, false, false);
+                TileUpdate tileUpdate = VirtualCell.makeTileUpdateFromCell(cell, false, false);
                 updatePacket.addTileUpdate(tileUpdate);
             }
         }
 
         // Add the current cell at the end, will override its earlier addition
         if (currentCell != null) {
-            TileUpdate tileUpdate = Cell.makeTileUpdateFromCell(this.getCurrentCell(), true, false);
+            TileUpdate tileUpdate = VirtualCell.makeTileUpdateFromCell(this.getCurrentCell(), true, false);
             updatePacket.addTileUpdate(tileUpdate);
         }
 
         if (targetCell != null) {
-            TileUpdate tileUpdate = Cell.makeTileUpdateFromCell(this.targetCell, false, true);
+            TileUpdate tileUpdate = VirtualCell.makeTileUpdateFromCell(this.targetCell, false, true);
             updatePacket.addTileUpdate(tileUpdate);
         }
 
@@ -99,7 +100,7 @@ public class GreedyBestFirstSearchSolver extends Solver {
         return minDistance;
     }
 
-    public Stack<Cell> generateBacktrace(Cell startingCell, Cell endingCell) {
+    public Stack<VirtualCell> generateBacktrace(VirtualCell startingCell, VirtualCell endingCell) {
         // Bread-First Search for Backtracking
         // Add starting cell to queue and to visited list
         // While queue is not empty:
@@ -110,33 +111,37 @@ public class GreedyBestFirstSearchSolver extends Solver {
         // Use a while loop to continually append to a list by getting parents until you get to startingCell
         // Return the list
 
-        Queue<Cell> queue = new LinkedList<>();
-        HashSet<Cell> visited = new HashSet<>();
+        Queue<VirtualCell> queue = new LinkedList<>();
+        HashSet<VirtualCell> visited = new HashSet<>();
         queue.add(startingCell);
         visited.add(startingCell);
 
-        HashMap<Cell, Cell> sources = new HashMap<>(Constants.mazeLength * Constants.mazeLength);
+        HashMap<VirtualCell, VirtualCell> sources = new HashMap<>(Constants.mazeLength * Constants.mazeLength);
 
         boolean searchComplete = false;
         while (!queue.isEmpty() && !searchComplete) {
-            Cell current = queue.poll();
-            for (Cell neighbor : getTraversedReachableNeighbors(current)) {
+            VirtualCell current = queue.poll();
+            for (VirtualCell neighbor : getTraversedReachableNeighbors(current)) {
                 if (!visited.contains(neighbor)) {
                     visited.add(neighbor);
                     sources.putIfAbsent(neighbor, current);
                     queue.add(neighbor);
-
-                    if (Grid.isTherePathBetweenCells(neighbor, endingCell)) {
-                        sources.putIfAbsent(endingCell, neighbor);
-                        searchComplete = true;
-                        break;
+                    try {
+                        if (Grid.isTherePathBetweenCells(neighbor, endingCell)) {
+                            sources.putIfAbsent(endingCell, neighbor);
+                            searchComplete = true;
+                            break;
+                        }
+                    }
+                    catch (Exception e){
+                        System.out.println("You have mismatching Cell types");
                     }
                 }
             }
         }
 
-        Stack<Cell> retVal = new Stack<>();
-        Cell appendee = sources.get(endingCell);
+        Stack<VirtualCell> retVal = new Stack<>();
+        VirtualCell appendee = sources.get(endingCell);
         while (!appendee.equals(startingCell)) {
             retVal.add(appendee);
             appendee = sources.get(appendee);
@@ -146,33 +151,38 @@ public class GreedyBestFirstSearchSolver extends Solver {
 
 
     public void iterate() {
-        if (this.isDone()) {
-        } else if (!startStepDone) {
-            this.currentCell = startPoint;
-            this.currentCell.setTraversed(true);
-            List<Cell> neighbors = getUntraversedReachableNeighbors(currentCell);
-            this.queue.addAll(neighbors);
-            targetCell = queue.poll();
-            this.setStartStepDone(true);
-        } else if (atDestination(currentCell)) {
-            this.targetCell = null;
-            this.setDone(true);
-        } else if (Grid.isTherePathBetweenCells(currentCell, targetCell)) {
+        try {
+            if (this.isDone()) {
+            } else if (!startStepDone) {
+                this.currentCell = startPoint;
+                this.currentCell.setTraversed(true);
+                List<VirtualCell> neighbors = getUntraversedReachableNeighbors(currentCell);
+                this.queue.addAll(neighbors);
+                targetCell = queue.poll();
+                this.setStartStepDone(true);
+            } else if (atDestination(currentCell)) {
+                this.targetCell = null;
+                this.setDone(true);
+            } else if (Grid.isTherePathBetweenCells(currentCell, targetCell)) {
 //            parentCells.put(targetCell, currentCell);
-            currentCell = targetCell;
-            currentCell.setTraversed(true);
-            ArrayList<Cell> neighbors = getUntraversedReachableNeighbors(currentCell);
-            queue.addAll(neighbors);
-            targetCell = queue.poll();
-        } else if (!backtrace.isEmpty()) {
-            // Pop the next move off of backtrace and move there
-            currentCell = backtrace.pop();
-        } else {
-            // Generate the backtrace for the currentCell and targetCell
-            backtrace = generateBacktrace(currentCell, targetCell);
+                currentCell = targetCell;
+                currentCell.setTraversed(true);
+                ArrayList<VirtualCell> neighbors = getUntraversedReachableNeighbors(currentCell);
+                queue.addAll(neighbors);
+                targetCell = queue.poll();
+            } else if (!backtrace.isEmpty()) {
+                // Pop the next move off of backtrace and move there
+                currentCell = backtrace.pop();
+            } else {
+                // Generate the backtrace for the currentCell and targetCell
+                backtrace = generateBacktrace(currentCell, targetCell);
 
-            // Pop the next move off of backtrace and move there
-            currentCell = backtrace.pop();
+                // Pop the next move off of backtrace and move there
+                currentCell = backtrace.pop();
+            }
+        }
+        catch (Exception e){
+            System.out.println("You have mismatching Cell types");
         }
     }
 

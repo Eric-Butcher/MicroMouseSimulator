@@ -3,6 +3,7 @@ package model.solvers;
 import controller.ViewUpdatePacket;
 import model.Cell;
 import model.Grid;
+import model.VirtualCell;
 import utilities.Constants;
 
 import java.util.ArrayList;
@@ -12,16 +13,16 @@ public abstract class Solver {
 
 //    private Cell[][] grid = new Cell[Constants.mazeLength][Constants.mazeLength];
 
-    protected Cell startPoint;
-    protected ArrayList<Cell> endPoints;
-    private final Grid grid;
+    protected VirtualCell startPoint;
+    protected ArrayList<VirtualCell> endPoints;
+    private final Grid<VirtualCell> grid;
     private boolean done = false;
 
-    public Solver(Grid grid) {
+    public Solver(Grid<VirtualCell> grid) {
         this.grid = grid;
         this.startPoint = this.grid.getCell(0, 0);
 
-        ArrayList<Cell> ends = new ArrayList<>();
+        ArrayList<VirtualCell> ends = new ArrayList<>();
         if ((Constants.mazeLength % 2) == 0) {
             ends.add(this.grid.getCell(Constants.maxCellIndex / 2, Constants.maxCellIndex / 2));
             ends.add(this.grid.getCell(Constants.maxCellIndex / 2 + 1, Constants.maxCellIndex / 2));
@@ -39,7 +40,7 @@ public abstract class Solver {
         }
     }
 
-    public Solver(Grid grid, Cell startPoint, ArrayList<Cell> endPoints) {
+    public Solver(Grid<VirtualCell> grid, VirtualCell startPoint, ArrayList<VirtualCell> endPoints) {
         this.grid = grid;
         this.startPoint = startPoint;
         this.endPoints = endPoints;
@@ -49,9 +50,9 @@ public abstract class Solver {
         }
     }
 
-    public static ArrayList<Cell> getUnTraversedCells(List<Cell> list) {
-        ArrayList<Cell> retVal = new ArrayList<>(4);
-        for (Cell cell : list) {
+    public static ArrayList<VirtualCell> getUnTraversedCells(List<VirtualCell> list) {
+        ArrayList<VirtualCell> retVal = new ArrayList<>(4);
+        for (VirtualCell cell : list) {
             if (!cell.isTraversed()) {
                 retVal.add(cell);
             }
@@ -59,9 +60,9 @@ public abstract class Solver {
         return retVal;
     }
 
-    public static ArrayList<Cell> getTraversedCells(List<Cell> list) {
-        ArrayList<Cell> retVal = new ArrayList<>(4);
-        for (Cell cell : list) {
+    public static ArrayList<VirtualCell> getTraversedCells(List<VirtualCell> list) {
+        ArrayList<VirtualCell> retVal = new ArrayList<>(4);
+        for (VirtualCell cell : list) {
             if (cell.isTraversed()) {
                 retVal.add(cell);
             }
@@ -69,7 +70,7 @@ public abstract class Solver {
         return retVal;
     }
 
-    public Grid getGrid() {
+    public Grid<VirtualCell> getGrid() {
         return grid;
     }
 
@@ -81,50 +82,60 @@ public abstract class Solver {
         this.done = done;
     }
 
-    public Cell getStartPoint() {
+    public VirtualCell getStartPoint() {
         return startPoint;
     }
 
-    public void setStartPoint(Cell startPoint) {
+    public void setStartPoint(VirtualCell startPoint) {
         this.startPoint = startPoint;
     }
 
-    public ArrayList<Cell> getEndPoints() {
+    public ArrayList<VirtualCell> getEndPoints() {
         return endPoints;
     }
 
-    public void setEndPoints(ArrayList<Cell> endPoints) {
+    public void setEndPoints(ArrayList<VirtualCell> endPoints) {
         this.endPoints = endPoints;
     }
 
-    public ArrayList<Cell> getUntraversedReachableNeighbors(Cell center) {
-        ArrayList<Cell> adjacents = this.grid.getAdjacentCells(center);
-        ArrayList<Cell> untraversed = getUnTraversedCells(adjacents);
-        ArrayList<Cell> retVal = new ArrayList<>();
-        for (Cell cell : untraversed) {
-            if (Grid.isTherePathBetweenCells(center, cell)) {
-                retVal.add(cell);
+    public ArrayList<VirtualCell> getUntraversedReachableNeighbors(VirtualCell center) {
+        ArrayList<VirtualCell> adjacents = this.grid.getAdjacentCells(center);
+        ArrayList<VirtualCell> untraversed = getUnTraversedCells(adjacents);
+        ArrayList<VirtualCell> retVal = new ArrayList<>();
+        for (VirtualCell cell : untraversed) {
+            try {
+                if (Grid.isTherePathBetweenCells(center, cell)) {
+                    retVal.add(cell);
+                }
+            }
+            catch(Exception e){
+                System.out.println("You have mismatching Cell types");
             }
         }
 
         return retVal;
     }
 
-    public ArrayList<Cell> getTraversedReachableNeighbors(Cell center) {
-        ArrayList<Cell> adjacents = this.grid.getAdjacentCells(center);
-        ArrayList<Cell> traversedCells = getTraversedCells(adjacents);
-        ArrayList<Cell> retVal = new ArrayList<>();
-        for (Cell cell : traversedCells) {
-            if (Grid.isTherePathBetweenCells(center, cell)) {
-                retVal.add(cell);
+    public ArrayList<VirtualCell> getTraversedReachableNeighbors(VirtualCell center) {
+        ArrayList<VirtualCell> adjacents = this.grid.getAdjacentCells(center);
+        ArrayList<VirtualCell> traversedCells = getTraversedCells(adjacents);
+        ArrayList<VirtualCell> retVal = new ArrayList<>();
+        for (VirtualCell cell : traversedCells) {
+            try {
+                if (Grid.isTherePathBetweenCells(center, cell)) {
+                    retVal.add(cell);
+                }
+            }
+            catch (Exception e){
+                System.out.println("You have mismatching Cell types");
             }
         }
 
         return retVal;
     }
 
-    public boolean atDestination(Cell current) {
-        for (Cell destination : endPoints) {
+    public boolean atDestination(VirtualCell current) {
+        for (VirtualCell destination : endPoints) {
             if (current.equals(destination)) {
                 return true;
             }
