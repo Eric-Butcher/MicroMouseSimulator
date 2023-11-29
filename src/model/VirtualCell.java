@@ -8,7 +8,6 @@ public class VirtualCell extends Cell{
         rightBorder = false;
         bottomBorder = false;
         leftBorder = false;
-        isVirtual = true;
     }
 
     public void addTopBorder(){this.topBorder = true;}
@@ -16,5 +15,14 @@ public class VirtualCell extends Cell{
     public void addBottomBorder(){this.bottomBorder=true;}
     public void addLeftBorder(){this.leftBorder=true;}
 
+    @Override
+    public boolean equals(Object o){
+        if(!(o instanceof VirtualCell cell)){
+            return false;
+        }
+        else{
+            return super.equals(o);
+        }
+    }
 
 }

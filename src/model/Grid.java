@@ -63,16 +63,16 @@ public class Grid<C extends Cell> {
 
     }
 
-    public static boolean isTherePathBetweenCells(Cell from, Cell to) throws Exception {
-
-        if(from.isVirtual() != to.isVirtual()){
-            throw new Exception("Mismatching Cell Type");
-        }
+    public boolean isTherePathBetweenCells(C from, C to) throws Exception{
 
         int fromX = from.getxPos();
         int fromY = from.getyPos();
         int toX = to.getxPos();
         int toY = to.getyPos();
+
+        if(!(this.getCell(fromX, fromY).equals(from) && this.getCell(toX, toY).equals(to) && from.equals(to))){
+            throw new IllegalArgumentException("Wrong Cell types");
+        }
 
         if (((fromY == toY) && (fromX == toX + 1)) && ((!from.isLeftBorder()) && (!to.isRightBorder()))) {
             return true;

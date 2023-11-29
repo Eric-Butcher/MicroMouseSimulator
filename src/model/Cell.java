@@ -15,8 +15,6 @@ public abstract class Cell {
     protected boolean bottomBorder;
     protected boolean leftBorder;
 
-    protected boolean isVirtual;
-
     private boolean isGoal = false;
 
     private boolean isInitialized = false;
@@ -67,7 +65,6 @@ public abstract class Cell {
         return leftBorder;
     }
 
-    public boolean isVirtual() {return isVirtual;}
 
     public boolean isInitialized() {
         return isInitialized;
@@ -84,5 +81,17 @@ public abstract class Cell {
     @Override
     public int hashCode() {
         return Objects.hash(getxPos(), getyPos());
+    }
+
+    public boolean equals(Object o){
+        if(this == o){
+            return true;
+        }
+        if(!(o instanceof Cell cell)){
+            return false;
+        }
+        else{
+            return this.getyPos() == cell.getyPos() && this.getxPos()==cell.getxPos() && this.isBottomBorder()==cell.isBottomBorder() && this.isLeftBorder()==cell.isLeftBorder() && this.isTopBorder()== cell.isTopBorder() && this.isRightBorder()==cell.isRightBorder() && this.isTraversed()==cell.isTraversed() && this.isInitialized()==cell.isInitialized();
+        }
     }
 }

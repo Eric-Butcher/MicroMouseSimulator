@@ -10,7 +10,6 @@ public class RealityCell extends Cell {
         rightBorder = true;
         bottomBorder = true;
         leftBorder = true;
-        isVirtual = false;
     }
 
     public static TileUpdate makeTileUpdateFromCell(RealityCell cell, boolean isCurrent, boolean toHighlight) {
@@ -36,8 +35,12 @@ public class RealityCell extends Cell {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof RealityCell cell)) return false;
-        return getxPos() == cell.getxPos() && getyPos() == cell.getyPos() && isInitialized() == cell.isInitialized() && isTopBorder() == cell.isTopBorder() && isRightBorder() == cell.isRightBorder() && isBottomBorder() == cell.isBottomBorder() && isLeftBorder() == cell.isLeftBorder() && isTraversed() == cell.isTraversed();
+        if(!(o instanceof RealityCell cell)){
+            return false;
+        }
+        else{
+            return super.equals(o);
+        }
+
     }
 }
