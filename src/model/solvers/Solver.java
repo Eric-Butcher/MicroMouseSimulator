@@ -3,6 +3,7 @@ package model.solvers;
 import controller.ViewUpdatePacket;
 import model.Cell;
 import model.Grid;
+import model.RealityCell;
 import model.VirtualCell;
 import utilities.Constants;
 
@@ -14,22 +15,24 @@ public abstract class Solver {
 //    private Cell[][] grid = new Cell[Constants.mazeLength][Constants.mazeLength];
 
     protected VirtualCell startPoint;
-    protected ArrayList<VirtualCell> endPoints;
-    private final Grid<VirtualCell> grid;
+    protected ArrayList<VirtualCell> endPoints = new ArrayList<>();
+    private final Grid<RealityCell> realityGrid;
+
+    private Grid<VirtualCell> virtualGrid = new Grid<>(VirtualCell.class);
     private boolean done = false;
 
-    public Solver(Grid<VirtualCell> grid) {
-        this.grid = grid;
-        this.startPoint = this.grid.getCell(0, 0);
+    public Solver(Grid<RealityCell> grid) {
+        this.realityGrid = grid;
+        this.startPoint = this.virtualGrid.getCell(0, 0);
 
         ArrayList<VirtualCell> ends = new ArrayList<>();
         if ((Constants.mazeLength % 2) == 0) {
-            ends.add(this.grid.getCell(Constants.maxCellIndex / 2, Constants.maxCellIndex / 2));
-            ends.add(this.grid.getCell(Constants.maxCellIndex / 2 + 1, Constants.maxCellIndex / 2));
-            ends.add(this.grid.getCell(Constants.maxCellIndex / 2, Constants.maxCellIndex / 2 + 1));
-            ends.add(this.grid.getCell(Constants.maxCellIndex / 2 + 1, Constants.maxCellIndex / 2 + 1));
+            ends.add(this.virtualGrid.getCell(Constants.maxCellIndex / 2, Constants.maxCellIndex / 2));
+            ends.add(this.virtualGrid.getCell(Constants.maxCellIndex / 2 + 1, Constants.maxCellIndex / 2));
+            ends.add(this.virtualGrid.getCell(Constants.maxCellIndex / 2, Constants.maxCellIndex / 2 + 1));
+            ends.add(this.virtualGrid.getCell(Constants.maxCellIndex / 2 + 1, Constants.maxCellIndex / 2 + 1));
         } else {
-            ends.add(this.grid.getCell(Constants.maxCellIndex / 2, Constants.maxCellIndex / 2));
+            ends.add(this.virtualGrid.getCell(Constants.maxCellIndex / 2, Constants.maxCellIndex / 2));
         }
 
 
@@ -40,12 +43,13 @@ public abstract class Solver {
         }
     }
 
-    public Solver(Grid<VirtualCell> grid, VirtualCell startPoint, ArrayList<VirtualCell> endPoints) {
-        this.grid = grid;
-        this.startPoint = startPoint;
-        this.endPoints = endPoints;
+    public Solver(Grid<RealityCell> grid, RealityCell startPoint, ArrayList<RealityCell> endPoints) {
+        this.realityGrid = grid;
+        this.startPoint = virtualGrid.getCell(startPoint.getxPos(), startPoint.getyPos());
 
-        for (Cell cell : this.endPoints) {
+
+        for (RealityCell cell : endPoints) {
+            this.endPoints.add(virtualGrid.getCell(cell.getxPos(), cell.getyPos()));
             cell.setGoal(true);
         }
     }
@@ -70,9 +74,9 @@ public abstract class Solver {
         return retVal;
     }
 
-    public Grid<VirtualCell> getGrid() {
-        return grid;
-    }
+    public Grid<RealityCell> getRealityGrid() {return realityGrid;}
+
+    public Grid<VirtualCell> getVirtualGrid(){return virtualGrid;}
 
     public boolean isDone() {
         return done;
@@ -99,17 +103,21 @@ public abstract class Solver {
     }
 
     public ArrayList<VirtualCell> getUntraversedReachableNeighbors(VirtualCell center) {
-        ArrayList<VirtualCell> adjacents = this.grid.getAdjacentCells(center);
+        ArrayList<VirtualCell> adjacents = this.virtualGrid.getAdjacentCells(center);
         ArrayList<VirtualCell> untraversed = getUnTraversedCells(adjacents);
         ArrayList<VirtualCell> retVal = new ArrayList<>();
         for (VirtualCell cell : untraversed) {
             try {
-                if (grid.isTherePathBetweenCells(center, cell)) {
+                if (virtualGrid.isTherePathBetweenCells(center, cell)) {
                     retVal.add(cell);
                 }
             }
             catch(Exception e){
-                System.out.println("You have incorrect Cell types");
+                System.out.println(center.getClass());
+                System.out.println(center.getxPos() + ", " + center.getyPos());
+                System.out.println(cell.getClass());
+                System.out.println(cell.getxPos() + ", " + cell.getyPos());
+                System.out.println("You used getUntraveredReachableNeighbors and have incorrect Cell types");
             }
         }
 
@@ -117,17 +125,17 @@ public abstract class Solver {
     }
 
     public ArrayList<VirtualCell> getTraversedReachableNeighbors(VirtualCell center) {
-        ArrayList<VirtualCell> adjacents = this.grid.getAdjacentCells(center);
+        ArrayList<VirtualCell> adjacents = this.virtualGrid.getAdjacentCells(center);
         ArrayList<VirtualCell> traversedCells = getTraversedCells(adjacents);
         ArrayList<VirtualCell> retVal = new ArrayList<>();
         for (VirtualCell cell : traversedCells) {
             try {
-                if (grid.isTherePathBetweenCells(center, cell)) {
+                if (virtualGrid.isTherePathBetweenCells(center, cell)) {
                     retVal.add(cell);
                 }
             }
             catch (Exception e){
-                System.out.println("You have incorrect Cell types");
+                System.out.println("You used getTraversedReachableNeighbors and have incorrect Cell types");
             }
         }
 
@@ -148,4 +156,22 @@ public abstract class Solver {
     public abstract void iterate();
 
     public abstract void finish();
+
+    public void updateVirtualGrid(boolean topBorder, boolean leftBorder, boolean bottomBorder, boolean rightBorder, int xPos, int yPos){
+        if(topBorder){
+            this.virtualGrid.getCell(xPos, yPos).addTopBorder();
+        }
+
+        if(leftBorder){
+            this.virtualGrid.getCell(xPos, yPos).addLeftBorder();
+        }
+
+        if(bottomBorder){
+            this.virtualGrid.getCell(xPos, yPos).addBottomBorder();
+        }
+
+        if(rightBorder){
+            this.virtualGrid.getCell(xPos, yPos).addRightBorder();
+        }
+    }
 }

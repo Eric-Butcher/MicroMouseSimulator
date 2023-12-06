@@ -4,6 +4,7 @@ import controller.TileUpdate;
 import controller.ViewUpdatePacket;
 import model.Cell;
 import model.Grid;
+import model.RealityCell;
 import model.VirtualCell;
 import utilities.Constants;
 
@@ -21,21 +22,24 @@ public class HeuristicDepthFirstSearchSolver extends Solver {
     private final HashMap<VirtualCell, VirtualCell> parentCells = new HashMap<>(Constants.mazeLength * Constants.mazeLength);
     private final Stack<VirtualCell> stack = new Stack<>();
     private boolean startStepDone = false;
-    private VirtualCell currentCell;
-    private VirtualCell targetCell;
-
-    public HeuristicDepthFirstSearchSolver(Grid<VirtualCell> grid) {
+    private VirtualCell currentVirtualCell;
+    private VirtualCell targetVirtualCell;
+    private RealityCell currentRealityCell;
+    public HeuristicDepthFirstSearchSolver(Grid<RealityCell> grid) {
         super(grid);
     }
 
-    public HeuristicDepthFirstSearchSolver(Grid<VirtualCell> grid, VirtualCell startPoint, ArrayList<VirtualCell> endPoints) {
+    public HeuristicDepthFirstSearchSolver(Grid<RealityCell> grid, RealityCell startPoint, ArrayList<RealityCell> endPoints) {
         super(grid, startPoint, endPoints);
     }
 
-    public VirtualCell getCurrentCell() {
-        return currentCell;
+    public VirtualCell getCurrentVirtualCell() {
+        return currentVirtualCell;
     }
 
+    public RealityCell getCurrentRealityCell(){
+        return currentRealityCell;
+    }
     public boolean isStartStepDone() {
         return startStepDone;
     }
@@ -52,7 +56,7 @@ public class HeuristicDepthFirstSearchSolver extends Solver {
         for (int x = Constants.minCellIndex; x <= Constants.maxCellIndex; x++) {
             for (int y = Constants.minCellIndex; y <= Constants.maxCellIndex; y++) {
 
-                Cell cell = this.getGrid().getCell(x, y);
+                Cell cell = this.getRealityGrid().getCell(x, y);
 
 
                 TileUpdate tileUpdate = Cell.makeTileUpdateFromCell(cell, false, false);
@@ -61,13 +65,13 @@ public class HeuristicDepthFirstSearchSolver extends Solver {
         }
 
         // Add the current cell at the end, will override its earlier addition
-        if (currentCell != null) {
-            TileUpdate tileUpdate = Cell.makeTileUpdateFromCell(this.getCurrentCell(), true, false);
+        if (this.getCurrentRealityCell() != null) {
+            TileUpdate tileUpdate = Cell.makeTileUpdateFromCell(this.getCurrentRealityCell(), true, false);
             updatePacket.addTileUpdate(tileUpdate);
         }
 
-        if (targetCell != null) {
-            TileUpdate tileUpdate = Cell.makeTileUpdateFromCell(this.targetCell, false, true);
+        if (this.getRealityGrid().getCell(targetVirtualCell.getxPos(), targetVirtualCell.getyPos()) != null) {
+            TileUpdate tileUpdate = Cell.makeTileUpdateFromCell(this.getRealityGrid().getCell(targetVirtualCell.getxPos(),targetVirtualCell.getyPos()), false, true);
             updatePacket.addTileUpdate(tileUpdate);
         }
 
@@ -97,8 +101,8 @@ public class HeuristicDepthFirstSearchSolver extends Solver {
         return minDistance;
     }
 
-    public ArrayList<VirtualCell> generateOrderedStackAppendList(VirtualCell currentCell) {
-        ArrayList<VirtualCell> neighbors = getUntraversedReachableNeighbors(currentCell);
+    public ArrayList<VirtualCell> generateOrderedStackAppendList(VirtualCell currentVirtualCell) {
+        ArrayList<VirtualCell> neighbors = getUntraversedReachableNeighbors(currentVirtualCell);
         neighbors.sort(Collections.reverseOrder(hueristicComparator)); // We want the closest to be ontop of the stack
         return neighbors;
     }
@@ -107,28 +111,32 @@ public class HeuristicDepthFirstSearchSolver extends Solver {
         try {
             if (this.isDone()) {
             } else if (!startStepDone) {
-                this.currentCell = startPoint;
-                this.currentCell.setTraversed(true);
-                List<VirtualCell> neighbors = generateOrderedStackAppendList(currentCell);
+                this.currentVirtualCell = startPoint;
+                this.currentVirtualCell.setTraversed(true);
+                this.currentRealityCell = this.getRealityGrid().getCell(currentVirtualCell.getxPos(), currentVirtualCell.getyPos());
+                this.updateVirtualGrid(currentRealityCell.isTopBorder(), currentRealityCell.isLeftBorder(), currentRealityCell.isBottomBorder(), currentRealityCell.isRightBorder(), currentRealityCell.getxPos(), currentRealityCell.getyPos());
+                List<VirtualCell> neighbors = generateOrderedStackAppendList(currentVirtualCell);
                 this.stack.addAll(neighbors);
-                targetCell = stack.pop();
+                targetVirtualCell = stack.pop();
                 this.setStartStepDone(true);
-            } else if (atDestination(currentCell)) {
-                this.targetCell = null;
+            } else if (atDestination(currentVirtualCell)) {
+                this.targetVirtualCell = null;
                 this.setDone(true);
-            } else if (Grid.isTherePathBetweenCells(currentCell, targetCell)) {
-                parentCells.put(targetCell, currentCell);
-                currentCell = targetCell;
-                currentCell.setTraversed(true);
-                ArrayList<Cell> neighbors = generateOrderedStackAppendList(currentCell);
+            } else if (this.getVirtualGrid().isTherePathBetweenCells(currentVirtualCell, targetVirtualCell)) {
+                parentCells.put(targetVirtualCell, currentVirtualCell);
+                currentVirtualCell = targetVirtualCell;
+                currentVirtualCell.setTraversed(true);
+                this.currentRealityCell = this.getRealityGrid().getCell(currentVirtualCell.getxPos(), currentVirtualCell.getyPos());
+                this.updateVirtualGrid(currentRealityCell.isTopBorder(), currentRealityCell.isLeftBorder(), currentRealityCell.isBottomBorder(), currentRealityCell.isRightBorder(), currentRealityCell.getxPos(), currentRealityCell.getyPos());
+                ArrayList<VirtualCell> neighbors = generateOrderedStackAppendList(currentVirtualCell);
                 stack.addAll(neighbors);
-                targetCell = stack.pop();
+                targetVirtualCell = stack.pop();
             } else {
-                currentCell = parentCells.get(currentCell);
+                currentVirtualCell = parentCells.get(currentVirtualCell);
             }
         }
         catch (Exception e){
-            System.out.println("You have incorrect Cell types");
+            System.out.println("You used HeuristicDepthFirstSearchSolver and have incorrect Cell types");
         }
     }
 

@@ -3,23 +3,39 @@ package model;
 import utilities.Constants;
 
 import java.lang.reflect.Array;
+import java.lang.reflect.Constructor;
 import java.util.ArrayList;
 import java.util.concurrent.ThreadLocalRandom;
 
 public class Grid<C extends Cell> {
     private C[][] cellGrid;
 
-    public Grid(Class<C> cls) {
+    public Grid(Class<C> cls){
 
         @SuppressWarnings("unchecked")
-        final C[][] cellGrid = (C[][])Array.newInstance(cls, 16, 16);
+        C[][] cellGrid = (C[][])Array.newInstance(cls, 16, 16);
+        try {
+            Constructor constructor = cls.getConstructors()[0];
+            for (int i = 0; i < 16; i++) {
+                for (int j = 0; j < 16; j++) {
+                    C cell = (C)constructor.newInstance(i, j);
+                    //System.out.println(cell.getxPos() + ", " + cell.getyPos());
+                    cellGrid[i][j] = cell;
+                    //System.out.println(cellGrid[i][j].getxPos() + ", " + cellGrid[i][j].getyPos());
+                }
+            }
+        }
+        catch (Exception e){
+
+        }
+        this.cellGrid = cellGrid;
     }
 
     public C getCell(int xLoc, int yLoc){
         if (((xLoc < 0) || (xLoc > 16)) || ((yLoc < 0) || (yLoc > 16))) {
             throw new IllegalArgumentException("Gave location(s) outside of maze bounds. ");
         }
-        return this.cellGrid[xLoc][yLoc];
+        return cellGrid[xLoc][yLoc];
     }
 
     public C[][] getCellGrid(){
@@ -70,7 +86,7 @@ public class Grid<C extends Cell> {
         int toX = to.getxPos();
         int toY = to.getyPos();
 
-        if(!(this.getCell(fromX, fromY).equals(from) && this.getCell(toX, toY).equals(to) && from.equals(to))){
+        if(!(this.getCell(fromX, fromY).equals(from) && this.getCell(toX, toY).equals(to))){
             throw new IllegalArgumentException("Wrong Cell types");
         }
 

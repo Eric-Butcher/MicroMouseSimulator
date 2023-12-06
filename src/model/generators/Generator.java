@@ -25,7 +25,8 @@ public abstract class Generator {
 //            }
 //        }
 
-        this.grid = new Grid(RealityCell.class);
+        Grid<RealityCell> grid = new Grid<>(RealityCell.class);
+        this.grid = grid;
     }
 
     public static RealityCell popRandomCellFromList(List<RealityCell> list) {
