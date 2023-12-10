@@ -70,7 +70,7 @@ public class HeuristicDepthFirstSearchSolver extends Solver {
             updatePacket.addTileUpdate(tileUpdate);
         }
 
-        if (this.getRealityGrid().getCell(targetVirtualCell.getxPos(), targetVirtualCell.getyPos()) != null) {
+        if (targetVirtualCell != null && this.getRealityGrid().getCell(targetVirtualCell.getxPos(), targetVirtualCell.getyPos()) != null) {
             TileUpdate tileUpdate = Cell.makeTileUpdateFromCell(this.getRealityGrid().getCell(targetVirtualCell.getxPos(),targetVirtualCell.getyPos()), false, true);
             updatePacket.addTileUpdate(tileUpdate);
         }

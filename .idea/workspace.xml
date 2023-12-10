@@ -121,7 +121,7 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
-    <configuration name="ControllerTimerTest.testTimerStillRunningAfterSolveComboBoxSelected" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+    <configuration name="GridTest.testGridConstrcutor" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
       <module name="JavaMazeSolvingSimulations" />
       <extension name="coverage">
         <pattern>
@@ -130,8 +130,8 @@
         </pattern>
       </extension>
       <option name="PACKAGE_NAME" value="tests" />
-      <option name="MAIN_CLASS_NAME" value="tests.ControllerTimerTest" />
-      <option name="METHOD_NAME" value="testTimerStillRunningAfterSolveComboBoxSelected" />
+      <option name="MAIN_CLASS_NAME" value="tests.GridTest" />
+      <option name="METHOD_NAME" value="testGridConstrcutor" />
       <option name="TEST_OBJECT" value="method" />
       <method v="2">
         <option name="Make" enabled="true" />
@@ -173,9 +173,9 @@
       <list>
         <item itemvalue="JUnit.HeuristicDepthFirstSearchSolverTest.testNoTeleportingMouse" />
         <item itemvalue="JUnit.HeuristicDepthFirstSearchSolverTest.testGetsPastStartStep" />
-        <item itemvalue="Application.Main" />
+        <item itemvalue="JUnit.GridTest.testGridConstrcutor" />
         <item itemvalue="JUnit.ControllerTimerTest" />
-        <item itemvalue="JUnit.ControllerTimerTest.testTimerStillRunningAfterSolveComboBoxSelected" />
+        <item itemvalue="Application.Main" />
       </list>
     </recent_temporary>
   </component>
