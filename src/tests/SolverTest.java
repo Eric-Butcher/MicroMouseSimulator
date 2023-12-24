@@ -101,11 +101,11 @@ public class SolverTest {
 
         int ax = 5;
         int ay = 5;
-        VirtualCell centerA = solver.getVirtualGrid().getCell(ax, ay);
-        VirtualCell topA = solver.getVirtualGrid().getCell(ax, ay - 1);
-        VirtualCell rightA = solver.getVirtualGrid().getCell(ax + 1, ay);
-        VirtualCell bottomA = solver.getVirtualGrid().getCell(ax, ay + 1);
-        VirtualCell leftA = solver.getVirtualGrid().getCell(ax - 1, ay);
+        VirtualCell centerA = solver.getVirtualGrid().getVirtualCell(ax, ay);
+        VirtualCell topA = solver.getVirtualGrid().getVirtualCell(ax, ay - 1);
+        VirtualCell rightA = solver.getVirtualGrid().getVirtualCell(ax + 1, ay);
+        VirtualCell bottomA = solver.getVirtualGrid().getVirtualCell(ax, ay + 1);
+        VirtualCell leftA = solver.getVirtualGrid().getVirtualCell(ax - 1, ay);
         assertEquals(4, solver.getUntraversedReachableNeighbors(centerA).size());
         ArrayList<VirtualCell> expected = new ArrayList<>();
         expected.add(topA);
@@ -118,11 +118,11 @@ public class SolverTest {
 
         int bx = 7;
         int by = 10;
-        VirtualCell centerB = solver.getVirtualGrid().getCell(bx, by);
-        VirtualCell topB = solver.getVirtualGrid().getCell(bx, by - 1);
-        VirtualCell rightB = solver.getVirtualGrid().getCell(bx + 1, by);
-        VirtualCell bottomB = solver.getVirtualGrid().getCell(bx, by + 1);
-        VirtualCell leftB = solver.getVirtualGrid().getCell(bx - 1, by);
+        VirtualCell centerB = solver.getVirtualGrid().getVirtualCell(bx, by);
+        VirtualCell topB = solver.getVirtualGrid().getVirtualCell(bx, by - 1);
+        VirtualCell rightB = solver.getVirtualGrid().getVirtualCell(bx + 1, by);
+        VirtualCell bottomB = solver.getVirtualGrid().getVirtualCell(bx, by + 1);
+        VirtualCell leftB = solver.getVirtualGrid().getVirtualCell(bx - 1, by);
         centerB.addRightBorder();
         centerB.addLeftBorder();
         ArrayList<Cell> expected2 = new ArrayList<>();
@@ -134,11 +134,11 @@ public class SolverTest {
 
         int cx = 3;
         int cy = 2;
-        VirtualCell centerC = solver.getVirtualGrid().getCell(cx, cy);
-        VirtualCell topC = solver.getVirtualGrid().getCell(cx, cy - 1);
-        VirtualCell rightC = solver.getVirtualGrid().getCell(cx + 1, cy);
-        VirtualCell bottomC = solver.getVirtualGrid().getCell(cx, cy + 1);
-        VirtualCell leftC = solver.getVirtualGrid().getCell(cx - 1, cy);
+        VirtualCell centerC = solver.getVirtualGrid().getVirtualCell(cx, cy);
+        VirtualCell topC = solver.getVirtualGrid().getVirtualCell(cx, cy - 1);
+        VirtualCell rightC = solver.getVirtualGrid().getVirtualCell(cx + 1, cy);
+        VirtualCell bottomC = solver.getVirtualGrid().getVirtualCell(cx, cy + 1);
+        VirtualCell leftC = solver.getVirtualGrid().getVirtualCell(cx - 1, cy);
         centerC.addBottomBorder();
         centerC.addTopBorder();
         ArrayList<VirtualCell> expected3 = new ArrayList<>();
@@ -150,11 +150,11 @@ public class SolverTest {
 
         int dx = 14;
         int dy = 14;
-        VirtualCell centerD = solver.getVirtualGrid().getCell(dx, dy);
-        VirtualCell topD = solver.getVirtualGrid().getCell(dx, dy - 1);
-        VirtualCell rightD = solver.getVirtualGrid().getCell(dx + 1, dy);
-        VirtualCell bottomD = solver.getVirtualGrid().getCell(dx, dy + 1);
-        VirtualCell leftD = solver.getVirtualGrid().getCell(dx - 1, dy);
+        VirtualCell centerD = solver.getVirtualGrid().getVirtualCell(dx, dy);
+        VirtualCell topD = solver.getVirtualGrid().getVirtualCell(dx, dy - 1);
+        VirtualCell rightD = solver.getVirtualGrid().getVirtualCell(dx + 1, dy);
+        VirtualCell bottomD = solver.getVirtualGrid().getVirtualCell(dx, dy + 1);
+        VirtualCell leftD = solver.getVirtualGrid().getVirtualCell(dx - 1, dy);
         rightD.addLeftBorder();
         bottomD.addTopBorder();
         leftD.addRightBorder();
@@ -166,11 +166,11 @@ public class SolverTest {
 
         int ex = 9;
         int ey = 1;
-        VirtualCell centerE = solver.getVirtualGrid().getCell(ex, ey);
-        VirtualCell topE = solver.getVirtualGrid().getCell(ex, ey - 1);
-        VirtualCell rightE = solver.getVirtualGrid().getCell(ex + 1, ey);
-        VirtualCell bottomE = solver.getVirtualGrid().getCell(ex, ey + 1);
-        VirtualCell leftE = solver.getVirtualGrid().getCell(ex - 1, ey);
+        VirtualCell centerE = solver.getVirtualGrid().getVirtualCell(ex, ey);
+        VirtualCell topE = solver.getVirtualGrid().getVirtualCell(ex, ey - 1);
+        VirtualCell rightE = solver.getVirtualGrid().getVirtualCell(ex + 1, ey);
+        VirtualCell bottomE = solver.getVirtualGrid().getVirtualCell(ex, ey + 1);
+        VirtualCell leftE = solver.getVirtualGrid().getVirtualCell(ex - 1, ey);
         centerE.addRightBorder();
         centerE.addTopBorder();
         centerE.addLeftBorder();
@@ -211,12 +211,12 @@ public class SolverTest {
 
         Generator generatorB = new PrimGenerator();
         ArrayList<RealityCell> endPoints = new ArrayList<>();
-        endPoints.add(generatorB.getGrid().getCell(4, 5));
-        endPoints.add(generatorB.getGrid().getCell(15, 15));
-        endPoints.add(generatorB.getGrid().getCell(0, 0));
-        endPoints.add(generatorB.getGrid().getCell(11, 13));
-        endPoints.add(generatorB.getGrid().getCell(7, 7));
-        RealityCell startPoint = generatorB.getGrid().getCell(3, 4);
+        endPoints.add(generatorB.getGrid().getRealityCell(4, 5));
+        endPoints.add(generatorB.getGrid().getRealityCell(15, 15));
+        endPoints.add(generatorB.getGrid().getRealityCell(0, 0));
+        endPoints.add(generatorB.getGrid().getRealityCell(11, 13));
+        endPoints.add(generatorB.getGrid().getRealityCell(7, 7));
+        RealityCell startPoint = generatorB.getGrid().getRealityCell(3, 4);
         Solver explicitSolver = new HeuristicDepthFirstSearchSolver(generatorB.getGrid(), startPoint, endPoints);
 
         destinations = new ArrayList<>();

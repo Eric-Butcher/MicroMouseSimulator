@@ -32,7 +32,7 @@ public class AldousBroderGenerator extends Generator {
         for (int x = Constants.minCellIndex; x <= Constants.maxCellIndex; x++) {
             for (int y = Constants.minCellIndex; y <= Constants.maxCellIndex; y++) {
 
-                RealityCell cell = this.getGrid().getCell(x, y);
+                RealityCell cell = this.getGrid().getRealityCell(x, y);
                 TileUpdate tileUpdate = RealityCell.makeTileUpdateFromCell(cell, false, false);
                 updatePacket.addTileUpdate(tileUpdate);
             }
@@ -48,7 +48,7 @@ public class AldousBroderGenerator extends Generator {
     }
 
     private void startStep() {
-        currentCell = this.getGrid().getRandomGridCell();
+        currentCell = this.getGrid().getRandomGridRealityCell();
         currentCell.initializeCell();
         cellsInitialized++;
     }
@@ -61,10 +61,10 @@ public class AldousBroderGenerator extends Generator {
         } else if (cellsInitialized == 0) {
             this.startStep();
         } else {
-            ArrayList<RealityCell> neighbors = this.getGrid().getAdjacentCells(currentCell);
+            ArrayList<RealityCell> neighbors = this.getGrid().getAdjacentRealityCells(currentCell);
             RealityCell chosen = popRandomCellFromList(neighbors);
             if (!chosen.isInitialized()) {
-                this.getGrid().createPathBetweenCells(currentCell, chosen);
+                this.getGrid().createPathBetweenRealityCells(currentCell, chosen);
                 chosen.initializeCell();
 
                 cellsInitialized++;

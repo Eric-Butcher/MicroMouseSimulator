@@ -1,10 +1,7 @@
 package model.solvers;
 
 import controller.ViewUpdatePacket;
-import model.Cell;
-import model.Grid;
-import model.RealityCell;
-import model.VirtualCell;
+import model.*;
 import utilities.Constants;
 
 import java.util.ArrayList;
@@ -16,23 +13,23 @@ public abstract class Solver {
 
     protected VirtualCell startPoint;
     protected ArrayList<VirtualCell> endPoints = new ArrayList<>();
-    private final Grid<RealityCell> realityGrid;
+    private final RealityGrid realityGrid;
 
-    private Grid<VirtualCell> virtualGrid = new Grid<>(VirtualCell.class);
+    private VirtualGrid virtualGrid = new VirtualGrid();
     private boolean done = false;
 
-    public Solver(Grid<RealityCell> grid) {
+    public Solver(RealityGrid grid) {
         this.realityGrid = grid;
-        this.startPoint = this.virtualGrid.getCell(0, 0);
+        this.startPoint = this.virtualGrid.getVirtualCell(0, 0);
 
         ArrayList<VirtualCell> ends = new ArrayList<>();
         if ((Constants.mazeLength % 2) == 0) {
-            ends.add(this.virtualGrid.getCell(Constants.maxCellIndex / 2, Constants.maxCellIndex / 2));
-            ends.add(this.virtualGrid.getCell(Constants.maxCellIndex / 2 + 1, Constants.maxCellIndex / 2));
-            ends.add(this.virtualGrid.getCell(Constants.maxCellIndex / 2, Constants.maxCellIndex / 2 + 1));
-            ends.add(this.virtualGrid.getCell(Constants.maxCellIndex / 2 + 1, Constants.maxCellIndex / 2 + 1));
+            ends.add(this.virtualGrid.getVirtualCell(Constants.maxCellIndex / 2, Constants.maxCellIndex / 2));
+            ends.add(this.virtualGrid.getVirtualCell(Constants.maxCellIndex / 2 + 1, Constants.maxCellIndex / 2));
+            ends.add(this.virtualGrid.getVirtualCell(Constants.maxCellIndex / 2, Constants.maxCellIndex / 2 + 1));
+            ends.add(this.virtualGrid.getVirtualCell(Constants.maxCellIndex / 2 + 1, Constants.maxCellIndex / 2 + 1));
         } else {
-            ends.add(this.virtualGrid.getCell(Constants.maxCellIndex / 2, Constants.maxCellIndex / 2));
+            ends.add(this.virtualGrid.getVirtualCell(Constants.maxCellIndex / 2, Constants.maxCellIndex / 2));
         }
 
 
@@ -43,13 +40,13 @@ public abstract class Solver {
         }
     }
 
-    public Solver(Grid<RealityCell> grid, RealityCell startPoint, ArrayList<RealityCell> endPoints) {
+    public Solver(RealityGrid grid, RealityCell startPoint, ArrayList<RealityCell> endPoints) {
         this.realityGrid = grid;
-        this.startPoint = virtualGrid.getCell(startPoint.getxPos(), startPoint.getyPos());
+        this.startPoint = virtualGrid.getVirtualCell(startPoint.getxPos(), startPoint.getyPos());
 
 
         for (RealityCell cell : endPoints) {
-            this.endPoints.add(virtualGrid.getCell(cell.getxPos(), cell.getyPos()));
+            this.endPoints.add(virtualGrid.getVirtualCell(cell.getxPos(), cell.getyPos()));
             cell.setGoal(true);
         }
     }
@@ -74,9 +71,9 @@ public abstract class Solver {
         return retVal;
     }
 
-    public Grid<RealityCell> getRealityGrid() {return realityGrid;}
+    public RealityGrid getRealityGrid() {return realityGrid;}
 
-    public Grid<VirtualCell> getVirtualGrid(){return virtualGrid;}
+    public VirtualGrid getVirtualGrid(){return virtualGrid;}
 
     public boolean isDone() {
         return done;
@@ -103,12 +100,12 @@ public abstract class Solver {
     }
 
     public ArrayList<VirtualCell> getUntraversedReachableNeighbors(VirtualCell center) {
-        ArrayList<VirtualCell> adjacents = this.virtualGrid.getAdjacentCells(center);
+        ArrayList<VirtualCell> adjacents = this.virtualGrid.getAdjacentVirtualCells(center);
         ArrayList<VirtualCell> untraversed = getUnTraversedCells(adjacents);
         ArrayList<VirtualCell> retVal = new ArrayList<>();
         for (VirtualCell cell : untraversed) {
             try {
-                if (virtualGrid.isTherePathBetweenCells(center, cell)) {
+                if (virtualGrid.isTherePathBetweenVirtualCells(center, cell)) {
                     retVal.add(cell);
                 }
             }
@@ -125,12 +122,12 @@ public abstract class Solver {
     }
 
     public ArrayList<VirtualCell> getTraversedReachableNeighbors(VirtualCell center) {
-        ArrayList<VirtualCell> adjacents = this.virtualGrid.getAdjacentCells(center);
+        ArrayList<VirtualCell> adjacents = this.virtualGrid.getAdjacentVirtualCells(center);
         ArrayList<VirtualCell> traversedCells = getTraversedCells(adjacents);
         ArrayList<VirtualCell> retVal = new ArrayList<>();
         for (VirtualCell cell : traversedCells) {
             try {
-                if (virtualGrid.isTherePathBetweenCells(center, cell)) {
+                if (virtualGrid.isTherePathBetweenVirtualCells(center, cell)) {
                     retVal.add(cell);
                 }
             }
@@ -159,19 +156,19 @@ public abstract class Solver {
 
     public void updateVirtualGrid(boolean topBorder, boolean leftBorder, boolean bottomBorder, boolean rightBorder, int xPos, int yPos){
         if(topBorder){
-            this.virtualGrid.getCell(xPos, yPos).addTopBorder();
+            this.virtualGrid.getVirtualCell(xPos, yPos).addTopBorder();
         }
 
         if(leftBorder){
-            this.virtualGrid.getCell(xPos, yPos).addLeftBorder();
+            this.virtualGrid.getVirtualCell(xPos, yPos).addLeftBorder();
         }
 
         if(bottomBorder){
-            this.virtualGrid.getCell(xPos, yPos).addBottomBorder();
+            this.virtualGrid.getVirtualCell(xPos, yPos).addBottomBorder();
         }
 
         if(rightBorder){
-            this.virtualGrid.getCell(xPos, yPos).addRightBorder();
+            this.virtualGrid.getVirtualCell(xPos, yPos).addRightBorder();
         }
     }
 }

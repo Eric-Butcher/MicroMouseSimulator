@@ -1,8 +1,8 @@
 package model.states;
 
 import controller.ViewUpdatePacket;
-import model.Grid;
 import model.Model;
+import model.RealityGrid;
 import model.generators.Generator;
 import model.generators.GeneratorAlgorithms;
 import model.generators.PrimGenerator;
@@ -16,7 +16,7 @@ public class SolveState extends ModelState {
     private Generator generatorAlgo;
     private Solver solverAlgo;
 
-    private final Grid blankGeneratedGrid;
+    private final RealityGrid blankGeneratedGrid;
 
     /**
      * @deprecated This constructor should only be used for testing.
@@ -33,7 +33,7 @@ public class SolveState extends ModelState {
 
     }
 
-    public SolveState(Model model, Class<? extends Generator> selectedGenerationAlgo, Class<? extends Solver> selectedSolvingAlgo, Grid blankGeneratedGrid) {
+    public SolveState(Model model, Class<? extends Generator> selectedGenerationAlgo, Class<? extends Solver> selectedSolvingAlgo, RealityGrid blankGeneratedGrid) {
         super(model);
         this.selectedGenerationAlgo = selectedGenerationAlgo;
         this.selectedSolvingAlgo = selectedSolvingAlgo;
@@ -77,7 +77,7 @@ public class SolveState extends ModelState {
     public void solve() {
         try {
             this.blankGeneratedGrid.unSolveGrid();
-            this.setSolverAlgo(this.selectedSolvingAlgo.getDeclaredConstructor(Grid.class).newInstance(this.blankGeneratedGrid));
+            this.setSolverAlgo(this.selectedSolvingAlgo.getDeclaredConstructor(RealityGrid.class).newInstance(this.blankGeneratedGrid));
         } catch (InstantiationException | InvocationTargetException | NoSuchMethodException |
                  IllegalAccessException e) {
             throw new RuntimeException(e);

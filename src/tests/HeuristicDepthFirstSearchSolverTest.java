@@ -143,11 +143,11 @@ public class HeuristicDepthFirstSearchSolverTest {
     @Test
     public void testHeuristicWithExplicitConstructor() {
         PrimGenerator generator = new PrimGenerator();
-        RealityCell startCell = generator.getGrid().getCell(0, 0);
+        RealityCell startCell = generator.getGrid().getRealityCell(0, 0);
         ArrayList<RealityCell> endPoints = new ArrayList<>();
-        endPoints.add(generator.getGrid().getCell(15, 15));
-        endPoints.add(generator.getGrid().getCell(4, 4));
-        endPoints.add(generator.getGrid().getCell(2, 14));
+        endPoints.add(generator.getGrid().getRealityCell(15, 15));
+        endPoints.add(generator.getGrid().getRealityCell(4, 4));
+        endPoints.add(generator.getGrid().getRealityCell(2, 14));
         HeuristicDepthFirstSearchSolver heuristicDepthFirstSearchSolver = new HeuristicDepthFirstSearchSolver(generator.getGrid(), startCell, endPoints);
 
         Cell a = new VirtualCell(4, 1);
@@ -225,11 +225,11 @@ public class HeuristicDepthFirstSearchSolverTest {
         PrimGenerator primGenerator = new PrimGenerator();
         HeuristicDepthFirstSearchSolver heuristicDepthFirstSearchSolver = new HeuristicDepthFirstSearchSolver(primGenerator.getGrid());
 
-        VirtualCell center = heuristicDepthFirstSearchSolver.getVirtualGrid().getCell(4, 4);
-        VirtualCell right = heuristicDepthFirstSearchSolver.getVirtualGrid().getCell(5, 4);
-        VirtualCell left = heuristicDepthFirstSearchSolver.getVirtualGrid().getCell(3, 4);
-        VirtualCell top = heuristicDepthFirstSearchSolver.getVirtualGrid().getCell(4, 3);
-        VirtualCell bottom = heuristicDepthFirstSearchSolver.getVirtualGrid().getCell(4, 5);
+        VirtualCell center = heuristicDepthFirstSearchSolver.getVirtualGrid().getVirtualCell(4, 4);
+        VirtualCell right = heuristicDepthFirstSearchSolver.getVirtualGrid().getVirtualCell(5, 4);
+        VirtualCell left = heuristicDepthFirstSearchSolver.getVirtualGrid().getVirtualCell(3, 4);
+        VirtualCell top = heuristicDepthFirstSearchSolver.getVirtualGrid().getVirtualCell(4, 3);
+        VirtualCell bottom = heuristicDepthFirstSearchSolver.getVirtualGrid().getVirtualCell(4, 5);
         center.addRightBorder();
         center.addLeftBorder();
 
@@ -242,11 +242,11 @@ public class HeuristicDepthFirstSearchSolverTest {
         int bx = 10;
         int by = 10;
 
-        VirtualCell centerB = heuristicDepthFirstSearchSolver.getVirtualGrid().getCell(bx, by);
-        VirtualCell rightB = heuristicDepthFirstSearchSolver.getVirtualGrid().getCell(bx + 1, by);
-        VirtualCell leftB = heuristicDepthFirstSearchSolver.getVirtualGrid().getCell(bx - 1, by);
-        VirtualCell topB = heuristicDepthFirstSearchSolver.getVirtualGrid().getCell(bx, by - 1);
-        VirtualCell bottomB = heuristicDepthFirstSearchSolver.getVirtualGrid().getCell(bx, by + 1);
+        VirtualCell centerB = heuristicDepthFirstSearchSolver.getVirtualGrid().getVirtualCell(bx, by);
+        VirtualCell rightB = heuristicDepthFirstSearchSolver.getVirtualGrid().getVirtualCell(bx + 1, by);
+        VirtualCell leftB = heuristicDepthFirstSearchSolver.getVirtualGrid().getVirtualCell(bx - 1, by);
+        VirtualCell topB = heuristicDepthFirstSearchSolver.getVirtualGrid().getVirtualCell(bx, by - 1);
+        VirtualCell bottomB = heuristicDepthFirstSearchSolver.getVirtualGrid().getVirtualCell(bx, by + 1);
         centerB.addBottomBorder();
         centerB.addTopBorder();
 
@@ -259,11 +259,11 @@ public class HeuristicDepthFirstSearchSolverTest {
         int cx = 14;
         int cy = 1;
 
-        VirtualCell centerC = heuristicDepthFirstSearchSolver.getVirtualGrid().getCell(cx, cy);
-        VirtualCell rightC = heuristicDepthFirstSearchSolver.getVirtualGrid().getCell(cx + 1, cy);
-        VirtualCell leftC = heuristicDepthFirstSearchSolver.getVirtualGrid().getCell(cx - 1, cy);
-        VirtualCell topC = heuristicDepthFirstSearchSolver.getVirtualGrid().getCell(cx, cy - 1);
-        VirtualCell bottomC = heuristicDepthFirstSearchSolver.getVirtualGrid().getCell(cx, cy + 1);
+        VirtualCell centerC = heuristicDepthFirstSearchSolver.getVirtualGrid().getVirtualCell(cx, cy);
+        VirtualCell rightC = heuristicDepthFirstSearchSolver.getVirtualGrid().getVirtualCell(cx + 1, cy);
+        VirtualCell leftC = heuristicDepthFirstSearchSolver.getVirtualGrid().getVirtualCell(cx - 1, cy);
+        VirtualCell topC = heuristicDepthFirstSearchSolver.getVirtualGrid().getVirtualCell(cx, cy - 1);
+        VirtualCell bottomC = heuristicDepthFirstSearchSolver.getVirtualGrid().getVirtualCell(cx, cy + 1);
         centerC.addTopBorder();
         centerC.addBottomBorder();
         centerC.addLeftBorder();

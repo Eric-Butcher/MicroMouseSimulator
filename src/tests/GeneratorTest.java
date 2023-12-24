@@ -20,10 +20,10 @@ public class GeneratorTest {
         for (int x = Constants.minCellIndex; x < Constants.mazeLength; x++) {
             for (int y = Constants.minCellIndex; y < Constants.mazeLength; y++) {
 
-                assertTrue(primGenerator.getGrid().getCell(x, y).isBottomBorder());
-                assertTrue(primGenerator.getGrid().getCell(x, y).isLeftBorder());
-                assertTrue(primGenerator.getGrid().getCell(x, y).isTopBorder());
-                assertTrue(primGenerator.getGrid().getCell(x, y).isRightBorder());
+                assertTrue(primGenerator.getGrid().getRealityCell(x, y).isBottomBorder());
+                assertTrue(primGenerator.getGrid().getRealityCell(x, y).isLeftBorder());
+                assertTrue(primGenerator.getGrid().getRealityCell(x, y).isTopBorder());
+                assertTrue(primGenerator.getGrid().getRealityCell(x, y).isRightBorder());
 
             }
         }

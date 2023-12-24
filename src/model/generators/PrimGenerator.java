@@ -37,7 +37,7 @@ public class PrimGenerator extends Generator {
         for (int x = Constants.minCellIndex; x <= Constants.maxCellIndex; x++) {
             for (int y = Constants.minCellIndex; y <= Constants.maxCellIndex; y++) {
 
-                RealityCell cell = this.getGrid().getCell(x, y);
+                RealityCell cell = this.getGrid().getRealityCell(x, y);
                 inFrontier = frontier.contains(cell);
 
                 TileUpdate tileUpdate = RealityCell.makeTileUpdateFromCell(cell, false, inFrontier);
@@ -48,9 +48,9 @@ public class PrimGenerator extends Generator {
     }
 
     private void startStep() {
-        RealityCell startCell = this.getGrid().getRandomGridCell();
+        RealityCell startCell = this.getGrid().getRandomGridRealityCell();
         startCell.initializeCell();
-        ArrayList<RealityCell> adjacentCells = this.getGrid().getAdjacentCells(startCell);
+        ArrayList<RealityCell> adjacentCells = this.getGrid().getAdjacentRealityCells(startCell);
         this.getFrontier().addAll(adjacentCells);
         this.setStartStepDone(true);
     }
@@ -65,14 +65,14 @@ public class PrimGenerator extends Generator {
             RealityCell chosen = Generator.popRandomCellFromList(this.getFrontier());
 
 //            2. Generate a list of all adjacent cells that are initialized.
-            ArrayList<RealityCell> adjacentCells = this.getGrid().getAdjacentCells(chosen);
+            ArrayList<RealityCell> adjacentCells = this.getGrid().getAdjacentRealityCells(chosen);
             ArrayList<RealityCell> initializedNeighbors = Generator.getInitializedCells(adjacentCells);
 
 //          3. Pick one of these initialized cells at random.
             RealityCell initializedNeighbor = Generator.popRandomCellFromList(initializedNeighbors);
 
 //          4. Form a path (delete the wall/s ) between the frontier cell and the initialized cell.
-            this.getGrid().createPathBetweenCells(chosen, initializedNeighbor);
+            this.getGrid().createPathBetweenRealityCells(chosen, initializedNeighbor);
 
 //          5. Set the frontier cell as initialized.
             chosen.initializeCell();

@@ -87,7 +87,7 @@ public class Grid<C extends Cell> {
         int toY = to.getyPos();
 
         if(!(this.getCell(fromX, fromY).equals(from) && this.getCell(toX, toY).equals(to))){
-            throw new IllegalArgumentException("Wrong Cell types");
+            throw new IllegalArgumentException("Cells don't exist in grid");
         }
 
         if (((fromY == toY) && (fromX == toX + 1)) && ((!from.isLeftBorder()) && (!to.isRightBorder()))) {

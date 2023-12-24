@@ -31,7 +31,7 @@ public class AldousBroderGeneratorTest {
 
         for (int x = Constants.minCellIndex; x <= Constants.maxCellIndex; x++) {
             for (int y = Constants.minCellIndex; y <= Constants.maxCellIndex; y++) {
-                assertTrue(aldousBroderGenerator.getGrid().getCell(x, y).isInitialized());
+                assertTrue(aldousBroderGenerator.getGrid().getRealityCell(x, y).isInitialized());
             }
         }
 
@@ -45,7 +45,7 @@ public class AldousBroderGeneratorTest {
 
         for (int x = Constants.minCellIndex; x <= Constants.maxCellIndex; x++) {
             for (int y = Constants.minCellIndex; y <= Constants.maxCellIndex; y++) {
-                Cell cell = aldousBroderGenerator.getGrid().getCell(x, y);
+                RealityCell cell = aldousBroderGenerator.getGrid().getRealityCell(x, y);
                 boolean isBlockedOff = cell.isBottomBorder() && cell.isTopBorder() && cell.isRightBorder() && cell.isLeftBorder();
                 assertFalse(isBlockedOff);
             }
@@ -64,14 +64,14 @@ public class AldousBroderGeneratorTest {
 
         Set<RealityCell> visited = new HashSet<>();
         Queue<RealityCell> queue = new LinkedList<>();
-        RealityCell start = aldousBroderGenerator.getGrid().getCell(Constants.minCellIndex, Constants.minCellIndex);
+        RealityCell start = aldousBroderGenerator.getGrid().getRealityCell(Constants.minCellIndex, Constants.minCellIndex);
 
         queue.add(start);
         visited.add(start);
         while (!queue.isEmpty()) {
             // Find all reachable neighbors
             RealityCell current = queue.remove();
-            ArrayList<RealityCell> neighbors = aldousBroderGenerator.getGrid().getAdjacentCells(current);
+            ArrayList<RealityCell> neighbors = aldousBroderGenerator.getGrid().getAdjacentRealityCells(current);
             for (RealityCell neighbor : neighbors) {
                 if (cellsMutuallyReachable(current, neighbor) && !(visited.contains(neighbor))) {
                     queue.add(neighbor);

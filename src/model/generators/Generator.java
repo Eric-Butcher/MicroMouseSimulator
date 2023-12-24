@@ -1,8 +1,8 @@
 package model.generators;
 
 import controller.ViewUpdatePacket;
-import model.Grid;
 import model.RealityCell;
+import model.RealityGrid;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -12,7 +12,7 @@ public abstract class Generator {
 
 //    private Cell[][] grid = new Cell[Constants.mazeLength][Constants.mazeLength];
 
-    private final Grid<RealityCell> grid;
+    private final RealityGrid grid;
 
     private boolean done = false;
 
@@ -25,7 +25,7 @@ public abstract class Generator {
 //            }
 //        }
 
-        Grid<RealityCell> grid = new Grid<>(RealityCell.class);
+        RealityGrid grid = new RealityGrid();
         this.grid = grid;
     }
 
@@ -59,7 +59,7 @@ public abstract class Generator {
         this.done = true;
     }
 
-    public Grid<RealityCell> getGrid() {
+    public RealityGrid getGrid() {
         return grid;
     }
 
