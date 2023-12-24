@@ -111,6 +111,7 @@ public class HeuristicDepthFirstSearchSolver extends Solver {
                 this.currentVirtualCell = startPoint;
                 this.currentVirtualCell.setTraversed(true);
                 this.currentRealityCell = this.getRealityGrid().getRealityCell(currentVirtualCell.getxPos(), currentVirtualCell.getyPos());
+                this.currentRealityCell.setTraversed(true);
                 this.updateVirtualGrid(currentRealityCell.isTopBorder(), currentRealityCell.isLeftBorder(), currentRealityCell.isBottomBorder(), currentRealityCell.isRightBorder(), currentRealityCell.getxPos(), currentRealityCell.getyPos());
                 List<VirtualCell> neighbors = generateOrderedStackAppendList(currentVirtualCell);
                 this.stack.addAll(neighbors);
@@ -124,6 +125,7 @@ public class HeuristicDepthFirstSearchSolver extends Solver {
                 currentVirtualCell = targetVirtualCell;
                 currentVirtualCell.setTraversed(true);
                 this.currentRealityCell = this.getRealityGrid().getRealityCell(currentVirtualCell.getxPos(), currentVirtualCell.getyPos());
+                this.currentRealityCell.setTraversed(true);
                 this.updateVirtualGrid(currentRealityCell.isTopBorder(), currentRealityCell.isLeftBorder(), currentRealityCell.isBottomBorder(), currentRealityCell.isRightBorder(), currentRealityCell.getxPos(), currentRealityCell.getyPos());
                 ArrayList<VirtualCell> neighbors = generateOrderedStackAppendList(currentVirtualCell);
                 stack.addAll(neighbors);
