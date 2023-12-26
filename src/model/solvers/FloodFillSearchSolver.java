@@ -29,6 +29,8 @@ public class FloodFillSearchSolver extends Solver{
 
     public RealityCell getCurrentRealityCell() {return currentRealityCell;}
     public void fill(){
+        intGrid = new int[16][16];
+        this.getVirtualGrid().unSolveGrid();
         Queue<VirtualCell> cellQueue = new LinkedList<>();
         HashMap<VirtualCell, Integer> cellToIndexMap = new HashMap<>();
         HashSet<VirtualCell> queueSet = new HashSet<>();
@@ -112,29 +114,62 @@ public class FloodFillSearchSolver extends Solver{
             int currentValue = intGrid[currentVirtualCell.getyPos()][currentVirtualCell.getxPos()];
             int currentXPos = currentVirtualCell.getxPos();
             int currentYPos = currentVirtualCell.getyPos();
-            int i = 10;
-            if(currentYPos<15){
+            int i = -1;
+            boolean choseNext = false;
+            if(currentYPos<15 && !choseNext){
                 if(intGrid[currentYPos+1][currentXPos] == currentValue-1) {
-                    currentVirtualCell = this.getVirtualGrid().getVirtualCell(currentXPos, currentYPos+1);
-                    i = 0;
+                    try {
+                        if (this.getVirtualGrid().isTherePathBetweenVirtualCells(this.getVirtualGrid().getVirtualCell(currentXPos, currentYPos + 1), this.currentVirtualCell)) {
+                            currentVirtualCell = this.getVirtualGrid().getVirtualCell(currentXPos, currentYPos + 1);
+                            i = 0;
+                            choseNext = true;
+                        }
+                    }
+                    catch (Exception e){
+
+                    }
                 }
             }
-            if(currentYPos>0){
+            if(currentYPos>0 && !choseNext){
                 if(intGrid[currentYPos-1][currentXPos] == currentValue-1) {
-                    currentVirtualCell = this.getVirtualGrid().getVirtualCell(currentXPos, currentYPos-1);
-                    i = 1;
+                    try {
+                        if (this.getVirtualGrid().isTherePathBetweenVirtualCells(this.getVirtualGrid().getVirtualCell(currentXPos, currentYPos - 1), this.currentVirtualCell)) {
+                            currentVirtualCell = this.getVirtualGrid().getVirtualCell(currentXPos, currentYPos - 1);
+                            i = 1;
+                            choseNext = true;
+                        }
+                    }
+                    catch (Exception e){
+
+                    }
                 }
             }
-            if(currentXPos<15){
+            if(currentXPos<15 && !choseNext){
                 if(intGrid[currentYPos][currentXPos+1] == currentValue-1) {
-                    currentVirtualCell = this.getVirtualGrid().getVirtualCell(currentXPos+1, currentYPos);
-                    i = 2;
+                    try {
+                        if (this.getVirtualGrid().isTherePathBetweenVirtualCells(this.getVirtualGrid().getVirtualCell(currentXPos + 1, currentYPos), this.currentVirtualCell)) {
+                            currentVirtualCell = this.getVirtualGrid().getVirtualCell(currentXPos + 1, currentYPos);
+                            i = 2;
+                            choseNext = true;
+                        }
+                    }
+                    catch (Exception e){
+
+                    }
                 }
             }
-            if(currentXPos>0){
+            if(currentXPos>0 && !choseNext){
                 if(intGrid[currentYPos][currentXPos-1] == currentValue-1) {
-                    currentVirtualCell = this.getVirtualGrid().getVirtualCell(currentXPos-1, currentYPos);
-                    i = 3;
+                    try {
+                        if (this.getVirtualGrid().isTherePathBetweenVirtualCells(this.getVirtualGrid().getVirtualCell(currentXPos - 1, currentYPos), this.currentVirtualCell)) {
+                            currentVirtualCell = this.getVirtualGrid().getVirtualCell(currentXPos - 1, currentYPos);
+                            i = 3;
+                            choseNext = true;
+                        }
+                    }
+                    catch (Exception e){
+
+                    }
                 }
             }
             currentRealityCell = this.getRealityGrid().getRealityCell(currentVirtualCell.getxPos(), currentVirtualCell.getyPos());

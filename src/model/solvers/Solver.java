@@ -157,18 +157,30 @@ public abstract class Solver {
     public void updateVirtualGrid(boolean topBorder, boolean leftBorder, boolean bottomBorder, boolean rightBorder, int xPos, int yPos){
         if(topBorder){
             this.virtualGrid.getVirtualCell(xPos, yPos).addTopBorder();
+            if(yPos!=0){
+                this.virtualGrid.getVirtualCell(xPos, yPos-1).addBottomBorder();
+            }
         }
 
         if(leftBorder){
             this.virtualGrid.getVirtualCell(xPos, yPos).addLeftBorder();
+            if(xPos!=0){
+                this.virtualGrid.getVirtualCell(xPos-1, yPos).addRightBorder();
+            }
         }
 
         if(bottomBorder){
             this.virtualGrid.getVirtualCell(xPos, yPos).addBottomBorder();
+            if(yPos!=15){
+                this.virtualGrid.getVirtualCell(xPos, yPos+1).addTopBorder();
+            }
         }
 
         if(rightBorder){
             this.virtualGrid.getVirtualCell(xPos, yPos).addRightBorder();
+            if(xPos!=15){
+                this.virtualGrid.getVirtualCell(xPos+1, yPos).addLeftBorder();
+            }
         }
     }
 
