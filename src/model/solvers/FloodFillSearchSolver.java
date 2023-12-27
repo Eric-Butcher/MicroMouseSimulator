@@ -111,6 +111,14 @@ public class FloodFillSearchSolver extends Solver{
         else{
             this.updateVirtualGrid(currentRealityCell);
             this.fill();
+            int[][] ints = this.getIntGrid();
+            for(int y = 0; y < Constants.mazeLength; y++){
+                System.out.print("[");
+                for(int x = 0; x < Constants.mazeLength; x++){
+                    System.out.printf("%4d", ints[y][x]);
+                }
+                System.out.println("]");
+            }
             int currentValue = intGrid[currentVirtualCell.getyPos()][currentVirtualCell.getxPos()];
             int currentXPos = currentVirtualCell.getxPos();
             int currentYPos = currentVirtualCell.getyPos();
