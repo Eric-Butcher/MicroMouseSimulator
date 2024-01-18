@@ -107,20 +107,11 @@ public class FloodFillSearchSolver extends Solver{
         }
         else if(this.atDestination(currentVirtualCell)){
             this.setDone(true);
-            rerun = true;
         }
         else{
             currentRealityCell.setTraversed(true);
             this.updateVirtualGrid(currentRealityCell);
             this.fill();
-//            int[][] ints = this.getIntGrid();
-//            for(int y = 0; y < Constants.mazeLength; y++){
-//                System.out.print("[");
-//                for(int x = 0; x < Constants.mazeLength; x++){
-//                    System.out.printf("%4d", ints[y][x]);
-//                }
-//                System.out.println("]");
-//            }
             int currentValue = intGrid[currentVirtualCell.getyPos()][currentVirtualCell.getxPos()];
             int currentXPos = currentVirtualCell.getxPos();
             int currentYPos = currentVirtualCell.getyPos();
@@ -183,18 +174,6 @@ public class FloodFillSearchSolver extends Solver{
                 }
             }
             currentRealityCell = this.getRealityGrid().getRealityCell(currentVirtualCell.getxPos(), currentVirtualCell.getyPos());
-            if(i==0){
-                System.out.println("went down");
-            }
-            if(i==1){
-                System.out.println("went up");
-            }
-            if(i==2){
-                System.out.println("went right");
-            }
-            if(i==3){
-                System.out.println("went left");
-            }
         }
 
     }
