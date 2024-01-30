@@ -36,7 +36,7 @@ public class Controller {
         this.view.getMenuPanel().getStepButton().addActionListener(new StepAction(this.model, this.view, this));
 
         this.view.getMenuPanel().getPlayPauseButton().addActionListener(new PlayPauseAction(this.model, this.view, this));
-
+        this.view.getMenuPanel().getRerunButton().addActionListener(new RerunAction(this.model, this.view, this));
     }
 
     public Timer getTimer() {

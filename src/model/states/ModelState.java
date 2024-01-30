@@ -32,4 +32,6 @@ public abstract class ModelState {
     public abstract void generate();
 
     public abstract void solve();
+
+    public abstract void rerun();
 }

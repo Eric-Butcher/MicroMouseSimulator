@@ -187,4 +187,8 @@ public abstract class Solver {
     public void updateVirtualGrid(RealityCell cell){
         updateVirtualGrid(cell.isTopBorder(), cell.isLeftBorder(), cell.isBottomBorder(), cell.isRightBorder(), cell.getxPos(), cell.getyPos());
     }
+
+    public void backToStart(){
+
+    };
 }

@@ -50,4 +50,7 @@ public class Model {
         this.modelState.solve();
     }
 
+    public void rerun(){
+        this.modelState.rerun();
+    }
 }

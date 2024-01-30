@@ -61,4 +61,8 @@ public class GenerateState extends ModelState {
             this.model.setState(new SolveState(this.model, this.selectedGenerationAlgo, this.selectedSolvingAlgo, this.getGeneratorAlgo().getGrid()));
         }
     }
+
+    public void rerun(){
+        this.model.setState(new SolveState(this.model, this.selectedGenerationAlgo, this.selectedSolvingAlgo, this.generatorAlgo.getGrid()));
+    }
 }

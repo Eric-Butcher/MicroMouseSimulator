@@ -143,6 +143,7 @@ public class HeuristicDepthFirstSearchSolver extends Solver {
         while (!this.isDone()) {
             this.iterate();
         }
+
     }
 
     /* Heuristic Depth-First Search Explained for Maze Solving

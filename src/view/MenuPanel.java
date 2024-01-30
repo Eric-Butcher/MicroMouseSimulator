@@ -14,6 +14,8 @@ public class MenuPanel extends JPanel {
     private final SolveMazeButton solveMazeButton;
     private final MazeSolverComboBox mazeSolverComboBox;
 
+    private final RerunButton rerunButton;
+
     public MenuPanel(int menuLength, int menuHeight) {
         // Panel setup
         this.setBackground(Color.BLACK);
@@ -30,6 +32,7 @@ public class MenuPanel extends JPanel {
         this.playPauseButton = new PlayPauseButton();
         this.finishButton = new FinishButton();
         this.stepButton = new StepButton();
+        this.rerunButton = new RerunButton();
 
         // Descriptive variables
         int firstColumn = 0, secondColumn = 1;
@@ -75,6 +78,12 @@ public class MenuPanel extends JPanel {
         gridBagConstraints.fill = GridBagConstraints.HORIZONTAL;
         this.add(this.playPauseButton, gridBagConstraints);
 
+        gridBagConstraints.gridwidth = 0;
+        gridBagConstraints.gridx = firstColumn;
+        gridBagConstraints.gridy = eighthRow;
+        gridBagConstraints.fill = GridBagConstraints.HORIZONTAL;
+        this.add(this.rerunButton, gridBagConstraints);
+
         this.setVisible(true);
 
     }
@@ -106,4 +115,6 @@ public class MenuPanel extends JPanel {
     public MazeSolverComboBox getMazeSolverComboBox() {
         return mazeSolverComboBox;
     }
+
+    public RerunButton getRerunButton(){return rerunButton;}
 }

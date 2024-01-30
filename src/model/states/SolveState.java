@@ -83,4 +83,9 @@ public class SolveState extends ModelState {
             throw new RuntimeException(e);
         }
     }
+
+    public void rerun(){
+        this.blankGeneratedGrid.unSolveGrid();
+        this.solverAlgo.backToStart();
+    }
 }

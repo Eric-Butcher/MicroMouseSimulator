@@ -183,4 +183,11 @@ public class FloodFillSearchSolver extends Solver{
             this.iterate();
         }
     }
+
+    @Override
+    public void backToStart(){
+        currentVirtualCell = startPoint;
+        currentRealityCell = this.getRealityGrid().getRealityCell(startPoint.getxPos(), startPoint.getyPos());
+        this.setDone(false);
+    }
 }
