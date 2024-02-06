@@ -181,4 +181,13 @@ public class FloodFillTest {
         assertTrue(solver.isDone());
         assertTrue(solver.getEndPoints().contains(solver.getCurrentVirtualCell()));
     }
+
+    @Test
+    public void rerun(){
+        Generator generator = new PrimGenerator();
+        generator.finish();
+        FloodFillSearchSolver solver = new FloodFillSearchSolver(generator.getGrid());
+        solver.finish();
+
+    }
 }

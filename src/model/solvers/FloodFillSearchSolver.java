@@ -115,14 +115,12 @@ public class FloodFillSearchSolver extends Solver{
             int currentValue = intGrid[currentVirtualCell.getyPos()][currentVirtualCell.getxPos()];
             int currentXPos = currentVirtualCell.getxPos();
             int currentYPos = currentVirtualCell.getyPos();
-            int i = -1;
             boolean choseNext = false;
-            if(currentYPos<15 && !choseNext){
+            if(currentYPos<15){
                 if(intGrid[currentYPos+1][currentXPos] == currentValue-1) {
                     try {
                         if (this.getVirtualGrid().isTherePathBetweenVirtualCells(this.getVirtualGrid().getVirtualCell(currentXPos, currentYPos + 1), this.currentVirtualCell)) {
                             currentVirtualCell = this.getVirtualGrid().getVirtualCell(currentXPos, currentYPos + 1);
-                            i = 0;
                             choseNext = true;
                         }
                     }
@@ -136,7 +134,6 @@ public class FloodFillSearchSolver extends Solver{
                     try {
                         if (this.getVirtualGrid().isTherePathBetweenVirtualCells(this.getVirtualGrid().getVirtualCell(currentXPos, currentYPos - 1), this.currentVirtualCell)) {
                             currentVirtualCell = this.getVirtualGrid().getVirtualCell(currentXPos, currentYPos - 1);
-                            i = 1;
                             choseNext = true;
                         }
                     }
@@ -150,7 +147,6 @@ public class FloodFillSearchSolver extends Solver{
                     try {
                         if (this.getVirtualGrid().isTherePathBetweenVirtualCells(this.getVirtualGrid().getVirtualCell(currentXPos + 1, currentYPos), this.currentVirtualCell)) {
                             currentVirtualCell = this.getVirtualGrid().getVirtualCell(currentXPos + 1, currentYPos);
-                            i = 2;
                             choseNext = true;
                         }
                     }
@@ -164,7 +160,6 @@ public class FloodFillSearchSolver extends Solver{
                     try {
                         if (this.getVirtualGrid().isTherePathBetweenVirtualCells(this.getVirtualGrid().getVirtualCell(currentXPos - 1, currentYPos), this.currentVirtualCell)) {
                             currentVirtualCell = this.getVirtualGrid().getVirtualCell(currentXPos - 1, currentYPos);
-                            i = 3;
                             choseNext = true;
                         }
                     }
@@ -179,15 +174,118 @@ public class FloodFillSearchSolver extends Solver{
     }
 
     public void finish(){
+        this.setEndpointsAsTargetDestination();
+        this.setDone(false);
         while (!this.isDone()) {
             this.iterate();
         }
     }
 
+    public void iterateReversed(){
+        if(this.isDone()){
+
+        }
+        else if(this.atDestination(currentVirtualCell)){
+            this.setDone(true);
+        }
+        else{
+            currentRealityCell.setTraversed(true);
+            this.updateVirtualGrid(currentRealityCell);
+            this.fill();
+            int currentValue = intGrid[currentVirtualCell.getyPos()][currentVirtualCell.getxPos()];
+            int currentXPos = currentVirtualCell.getxPos();
+            int currentYPos = currentVirtualCell.getyPos();
+            boolean choseNext = false;
+            if(currentXPos>0){
+                if(intGrid[currentYPos][currentXPos-1] == currentValue+1) {
+                    try {
+                        if (this.getVirtualGrid().isTherePathBetweenVirtualCells(this.getVirtualGrid().getVirtualCell(currentXPos - 1, currentYPos), this.currentVirtualCell)) {
+                            currentVirtualCell = this.getVirtualGrid().getVirtualCell(currentXPos - 1, currentYPos);
+                            choseNext = true;
+                        }
+                    }
+                    catch (Exception e){
+
+                    }
+                }
+            }
+            if(currentYPos>0 && !choseNext){
+                if(intGrid[currentYPos-1][currentXPos] == currentValue+1) {
+                    try {
+                        if (this.getVirtualGrid().isTherePathBetweenVirtualCells(this.getVirtualGrid().getVirtualCell(currentXPos, currentYPos - 1), this.currentVirtualCell)) {
+                            currentVirtualCell = this.getVirtualGrid().getVirtualCell(currentXPos, currentYPos - 1);
+                            choseNext = true;
+                        }
+                    }
+                    catch (Exception e){
+
+                    }
+                }
+            }
+            if(currentYPos<15 && !choseNext){
+                if(intGrid[currentYPos+1][currentXPos] == currentValue+1) {
+                    try {
+                        if (this.getVirtualGrid().isTherePathBetweenVirtualCells(this.getVirtualGrid().getVirtualCell(currentXPos, currentYPos + 1), this.currentVirtualCell)) {
+                            currentVirtualCell = this.getVirtualGrid().getVirtualCell(currentXPos, currentYPos + 1);
+                            choseNext = true;
+                        }
+                    }
+                    catch (Exception e){
+
+                    }
+                }
+            }
+            if(currentXPos<15 && !choseNext){
+                if(intGrid[currentYPos][currentXPos+1] == currentValue+1) {
+                    try {
+                        if (this.getVirtualGrid().isTherePathBetweenVirtualCells(this.getVirtualGrid().getVirtualCell(currentXPos + 1, currentYPos), this.currentVirtualCell)) {
+                            currentVirtualCell = this.getVirtualGrid().getVirtualCell(currentXPos + 1, currentYPos);
+                            choseNext = true;
+                        }
+                    }
+                    catch (Exception e){
+
+                    }
+                }
+            }
+            if(!choseNext){
+                if(this.getVirtualGrid().getReachableAdjacentVirtualCells(this.currentVirtualCell).size() == 1){
+                    VirtualCell nextCell = this.getVirtualGrid().getReachableAdjacentVirtualCells(this.currentVirtualCell).get(0);
+                    this.currentVirtualCell.addLeftBorder();
+                    this.currentVirtualCell.addBottomBorder();
+                    this.currentVirtualCell.addRightBorder();
+                    this.currentVirtualCell.addTopBorder();
+                    VirtualCell old = this.currentVirtualCell;
+                    this.currentVirtualCell = nextCell;
+                    if(old.getyPos()>this.currentVirtualCell.getyPos()){
+                        this.currentVirtualCell.addBottomBorder();
+                    }
+                    else if(old.getyPos()<this.currentVirtualCell.getyPos()){
+                        this.currentVirtualCell.addTopBorder();
+                    }
+                    else if(old.getxPos()>this.currentVirtualCell.getxPos()){
+                        this.currentVirtualCell.addRightBorder();
+                    }
+                    else{
+                        this.currentVirtualCell.addLeftBorder();
+                    }
+                }
+            }
+            currentRealityCell = this.getRealityGrid().getRealityCell(currentVirtualCell.getxPos(), currentVirtualCell.getyPos());
+        }
+    }
+
     @Override
     public void backToStart(){
-        currentVirtualCell = startPoint;
-        currentRealityCell = this.getRealityGrid().getRealityCell(startPoint.getxPos(), startPoint.getyPos());
+        this.setStartAsTargetDestination();
         this.setDone(false);
+        int x = 0;
+        while(!this.isDone()){
+            if(x < 50) {
+                System.out.println(this.getCurrentVirtualCell().getxPos() + ", " + this.getCurrentVirtualCell().getyPos());
+                x++;
+            }
+            this.iterateReversed();
+        }
     }
 }

@@ -34,6 +34,9 @@ public class RealityGrid {
         return grid.getAdjacentCells(centerCell);
     }
 
+    public ArrayList<RealityCell> getReachableAdjacentRealityCells(RealityCell centerCell){
+        return grid.getReachableAdjacentCells(centerCell);
+    }
     public void unSolveGrid(){
         grid.unSolveGrid();
     }

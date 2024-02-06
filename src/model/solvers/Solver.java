@@ -13,6 +13,8 @@ public abstract class Solver {
 
     protected VirtualCell startPoint;
     protected ArrayList<VirtualCell> endPoints = new ArrayList<>();
+
+    protected ArrayList<VirtualCell> targetDestination = new ArrayList<>();
     private final RealityGrid realityGrid;
 
     private VirtualGrid virtualGrid = new VirtualGrid();
@@ -34,6 +36,7 @@ public abstract class Solver {
 
 
         this.endPoints = ends;
+        this.targetDestination = ends;
 
         for (Cell cell : this.endPoints) {
             cell.setGoal(true);
@@ -140,7 +143,7 @@ public abstract class Solver {
     }
 
     public boolean atDestination(VirtualCell current) {
-        for (VirtualCell destination : endPoints) {
+        for (VirtualCell destination : targetDestination) {
             if (current.equals(destination)) {
                 return true;
             }
@@ -191,4 +194,25 @@ public abstract class Solver {
     public void backToStart(){
 
     };
+
+    public void setEndpointsAsTargetDestination(){
+        ArrayList<VirtualCell> ends = new ArrayList<>();
+        if ((Constants.mazeLength % 2) == 0) {
+            ends.add(this.virtualGrid.getVirtualCell(Constants.maxCellIndex / 2, Constants.maxCellIndex / 2));
+            ends.add(this.virtualGrid.getVirtualCell(Constants.maxCellIndex / 2 + 1, Constants.maxCellIndex / 2));
+            ends.add(this.virtualGrid.getVirtualCell(Constants.maxCellIndex / 2, Constants.maxCellIndex / 2 + 1));
+            ends.add(this.virtualGrid.getVirtualCell(Constants.maxCellIndex / 2 + 1, Constants.maxCellIndex / 2 + 1));
+        } else {
+            ends.add(this.virtualGrid.getVirtualCell(Constants.maxCellIndex / 2, Constants.maxCellIndex / 2));
+        }
+
+
+        this.targetDestination = ends;
+    }
+
+    public void setStartAsTargetDestination(){
+        ArrayList<VirtualCell> ends = new ArrayList<>();
+        ends.add(this.virtualGrid.getVirtualCell(0,0));
+        this.targetDestination=ends;
+    }
 }
