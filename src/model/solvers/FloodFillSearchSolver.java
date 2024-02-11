@@ -203,11 +203,11 @@ public class FloodFillSearchSolver extends Solver{
             int currentXPos = currentVirtualCell.getxPos();
             int currentYPos = currentVirtualCell.getyPos();
             boolean choseNext = false;
-            if(currentXPos>0){
-                if(intGrid[currentYPos][currentXPos-1] == currentValue+1) {
+            if(currentYPos>0){
+                if(intGrid[currentYPos-1][currentXPos] == currentValue+1) {
                     try {
-                        if (this.getVirtualGrid().isTherePathBetweenVirtualCells(this.getVirtualGrid().getVirtualCell(currentXPos - 1, currentYPos), this.currentVirtualCell)) {
-                            currentVirtualCell = this.getVirtualGrid().getVirtualCell(currentXPos - 1, currentYPos);
+                        if (this.getVirtualGrid().isTherePathBetweenVirtualCells(this.getVirtualGrid().getVirtualCell(currentXPos, currentYPos - 1), this.currentVirtualCell)) {
+                            currentVirtualCell = this.getVirtualGrid().getVirtualCell(currentXPos, currentYPos - 1);
                             choseNext = true;
                         }
                     }
@@ -216,11 +216,11 @@ public class FloodFillSearchSolver extends Solver{
                     }
                 }
             }
-            if(currentYPos>0 && !choseNext){
-                if(intGrid[currentYPos-1][currentXPos] == currentValue+1) {
+            if(currentXPos>0 && !choseNext){
+                if(intGrid[currentYPos][currentXPos-1] == currentValue+1) {
                     try {
-                        if (this.getVirtualGrid().isTherePathBetweenVirtualCells(this.getVirtualGrid().getVirtualCell(currentXPos, currentYPos - 1), this.currentVirtualCell)) {
-                            currentVirtualCell = this.getVirtualGrid().getVirtualCell(currentXPos, currentYPos - 1);
+                        if (this.getVirtualGrid().isTherePathBetweenVirtualCells(this.getVirtualGrid().getVirtualCell(currentXPos - 1, currentYPos), this.currentVirtualCell)) {
+                            currentVirtualCell = this.getVirtualGrid().getVirtualCell(currentXPos - 1, currentYPos);
                             choseNext = true;
                         }
                     }
@@ -255,6 +255,12 @@ public class FloodFillSearchSolver extends Solver{
                     }
                 }
             }
+            if(!choseNext){
+                    //issue if the correct cell the go to has the same value
+                    VirtualCell deadend = this.currentVirtualCell;
+                    this.iterate();
+                    deadEnds.add(deadend);
+            }
             currentRealityCell = this.getRealityGrid().getRealityCell(currentVirtualCell.getxPos(), currentVirtualCell.getyPos());
         }
     }
@@ -265,10 +271,11 @@ public class FloodFillSearchSolver extends Solver{
         this.setDone(false);
         System.out.println("new rerun");
         int x = 0;
-        while(!this.isDone()){
+        while(!this.isDone()) {
+            if (x < 80){
                 System.out.println(this.currentVirtualCell.getxPos() + ", " + this.currentVirtualCell.getyPos());
                 x++;
-
+            }
             this.iterateReversed();
         }
 
