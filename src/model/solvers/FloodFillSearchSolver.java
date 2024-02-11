@@ -255,22 +255,6 @@ public class FloodFillSearchSolver extends Solver{
                     }
                 }
             }
-            if(!choseNext){
-                if(!this.getVirtualGrid().getReachableAdjacentVirtualCells(this.currentVirtualCell).isEmpty()){
-                    ArrayList<VirtualCell> reachableAdjacentCells = this.getVirtualGrid().getReachableAdjacentVirtualCells(this.currentVirtualCell);
-
-                        System.out.println("it is choosing a random adjacent cell, the amount of reachable adjacent cells is: " + reachableAdjacentCells.size());
-                        whatever++;
-
-                    VirtualCell nextCell = reachableAdjacentCells.get((int)(Math.random() * reachableAdjacentCells.size()));
-                    deadEnds.add(this.currentVirtualCell);
-//                    this.currentVirtualCell.addBottomBorder();
-//                    this.currentVirtualCell.addRightBorder();
-//                    this.currentVirtualCell.addTopBorder();
-//                    this.currentVirtualCell.addLeftBorder();
-                    this.currentVirtualCell = nextCell;
-                }
-            }
             currentRealityCell = this.getRealityGrid().getRealityCell(currentVirtualCell.getxPos(), currentVirtualCell.getyPos());
         }
     }
