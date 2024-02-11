@@ -12,6 +12,10 @@ public class FloodFillSearchSolver extends Solver{
 
     private int[][] intGrid = new int[16][16];
 
+    private int whatever = 0;
+
+    private HashSet<VirtualCell> deadEnds = new HashSet<>();
+
     private VirtualCell currentVirtualCell = startPoint;
 
     private RealityCell currentRealityCell = this.getRealityGrid().getRealityCell(startPoint.getxPos(), startPoint.getyPos());
@@ -69,6 +73,9 @@ public class FloodFillSearchSolver extends Solver{
                     intGrid[i][j] = 694;
                 }
             }
+        }
+        for(VirtualCell c : deadEnds){
+            intGrid[c.getyPos()][c.getxPos()] = 694;
         }
     }
 
@@ -249,26 +256,19 @@ public class FloodFillSearchSolver extends Solver{
                 }
             }
             if(!choseNext){
-                if(this.getVirtualGrid().getReachableAdjacentVirtualCells(this.currentVirtualCell).size() == 1){
-                    VirtualCell nextCell = this.getVirtualGrid().getReachableAdjacentVirtualCells(this.currentVirtualCell).get(0);
-                    this.currentVirtualCell.addLeftBorder();
-                    this.currentVirtualCell.addBottomBorder();
-                    this.currentVirtualCell.addRightBorder();
-                    this.currentVirtualCell.addTopBorder();
-                    VirtualCell old = this.currentVirtualCell;
+                if(!this.getVirtualGrid().getReachableAdjacentVirtualCells(this.currentVirtualCell).isEmpty()){
+                    ArrayList<VirtualCell> reachableAdjacentCells = this.getVirtualGrid().getReachableAdjacentVirtualCells(this.currentVirtualCell);
+
+                        System.out.println("it is choosing a random adjacent cell, the amount of reachable adjacent cells is: " + reachableAdjacentCells.size());
+                        whatever++;
+
+                    VirtualCell nextCell = reachableAdjacentCells.get((int)(Math.random() * reachableAdjacentCells.size()));
+                    deadEnds.add(this.currentVirtualCell);
+//                    this.currentVirtualCell.addBottomBorder();
+//                    this.currentVirtualCell.addRightBorder();
+//                    this.currentVirtualCell.addTopBorder();
+//                    this.currentVirtualCell.addLeftBorder();
                     this.currentVirtualCell = nextCell;
-                    if(old.getyPos()>this.currentVirtualCell.getyPos()){
-                        this.currentVirtualCell.addBottomBorder();
-                    }
-                    else if(old.getyPos()<this.currentVirtualCell.getyPos()){
-                        this.currentVirtualCell.addTopBorder();
-                    }
-                    else if(old.getxPos()>this.currentVirtualCell.getxPos()){
-                        this.currentVirtualCell.addRightBorder();
-                    }
-                    else{
-                        this.currentVirtualCell.addLeftBorder();
-                    }
                 }
             }
             currentRealityCell = this.getRealityGrid().getRealityCell(currentVirtualCell.getxPos(), currentVirtualCell.getyPos());
@@ -279,13 +279,14 @@ public class FloodFillSearchSolver extends Solver{
     public void backToStart(){
         this.setStartAsTargetDestination();
         this.setDone(false);
+        System.out.println("new rerun");
         int x = 0;
         while(!this.isDone()){
-            if(x < 50) {
-                System.out.println(this.getCurrentVirtualCell().getxPos() + ", " + this.getCurrentVirtualCell().getyPos());
+                System.out.println(this.currentVirtualCell.getxPos() + ", " + this.currentVirtualCell.getyPos());
                 x++;
-            }
+
             this.iterateReversed();
         }
+
     }
 }
