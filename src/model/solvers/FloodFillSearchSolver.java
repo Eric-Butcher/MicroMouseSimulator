@@ -256,10 +256,21 @@ public class FloodFillSearchSolver extends Solver{
                 }
             }
             if(!choseNext){
-                    //issue if the correct cell the go to has the same value
-                    VirtualCell deadend = this.currentVirtualCell;
-                    this.iterate();
-                    deadEnds.add(deadend);
+                ArrayList<VirtualCell> reachableAdjacentCells = this.getVirtualGrid().getReachableAdjacentVirtualCells(this.currentVirtualCell);
+                if(whatever < 60) {
+                    System.out.println("the number of reachableAdjacentCells are " + reachableAdjacentCells.size());
+                    whatever++;
+                }
+                if(reachableAdjacentCells.size()==1){
+                    this.currentVirtualCell.addLeftBorder();
+                    this.currentVirtualCell.addTopBorder();
+                    this.currentVirtualCell.addRightBorder();
+                    this.currentVirtualCell.addBottomBorder();
+                    this.currentVirtualCell = reachableAdjacentCells.get(0);
+                }
+                else{
+                    this.currentVirtualCell = reachableAdjacentCells.get((int)(Math.random()*reachableAdjacentCells.size()));
+                }
             }
             currentRealityCell = this.getRealityGrid().getRealityCell(currentVirtualCell.getxPos(), currentVirtualCell.getyPos());
         }
@@ -272,12 +283,24 @@ public class FloodFillSearchSolver extends Solver{
         System.out.println("new rerun");
         int x = 0;
         while(!this.isDone()) {
-            if (x < 80){
+            if (x < 60){
                 System.out.println(this.currentVirtualCell.getxPos() + ", " + this.currentVirtualCell.getyPos());
                 x++;
+                System.out.println("this is the int grid at this point");
+                printIntGrid();
             }
             this.iterateReversed();
         }
 
+    }
+
+    public void printIntGrid(){
+        for(int y = 0; y < Constants.mazeLength; y++){
+            System.out.print("[");
+            for(int x = 0; x < Constants.mazeLength; x++){
+                System.out.printf("%4d", intGrid[y][x]);
+            }
+            System.out.println("]");
+        }
     }
 }
