@@ -75,7 +75,7 @@ public class FloodFillTest {
 
         };
         FloodFillSearchSolver solver = new FloodFillSearchSolver(grid);
-        solver.fill();
+        solver.fill(solver.getEndPoints());
         int[][] actualAns = solver.getIntGrid();
         for(int i = 0; i < 16; i++){
             for(int j = 0; j < 16; j++){
@@ -111,7 +111,7 @@ public class FloodFillTest {
                 solver.updateVirtualGrid(solver.getRealityGrid().getRealityCell(i,j));
             }
         }
-        solver.fill();
+        solver.fill(solver.getEndPoints());
         int[][] actualAns = solver.getIntGrid();
         for(int i = 0; i < 16; i++){
             for(int j = 0; j < 16; j++){
@@ -163,7 +163,7 @@ public class FloodFillTest {
                 solver.updateVirtualGrid(solver.getRealityGrid().getRealityCell(i,j));
             }
         }
-        solver.fill();
+        solver.fill(solver.getEndPoints());
         int[][] actualAns = solver.getIntGrid();
         for(int i = 0; i < 16; i++){
             for(int j = 0; j < 16; j++){

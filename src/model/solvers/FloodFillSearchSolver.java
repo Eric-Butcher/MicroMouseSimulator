@@ -12,10 +12,6 @@ public class FloodFillSearchSolver extends Solver{
 
     private int[][] intGrid = new int[16][16];
 
-    private int whatever = 0;
-
-    private HashSet<VirtualCell> deadEnds = new HashSet<>();
-
     private VirtualCell currentVirtualCell = startPoint;
 
     private RealityCell currentRealityCell = this.getRealityGrid().getRealityCell(startPoint.getxPos(), startPoint.getyPos());
@@ -32,13 +28,13 @@ public class FloodFillSearchSolver extends Solver{
     }
 
     public RealityCell getCurrentRealityCell() {return currentRealityCell;}
-    public void fill(){
+    public void fill(ArrayList<VirtualCell> endpoints){
         intGrid = new int[16][16];
         this.getVirtualGrid().unSolveGrid();
         Queue<VirtualCell> cellQueue = new LinkedList<>();
         HashMap<VirtualCell, Integer> cellToIndexMap = new HashMap<>();
         HashSet<VirtualCell> queueSet = new HashSet<>();
-        for(VirtualCell endPoints: this.getEndPoints()){
+        for(VirtualCell endPoints: endpoints){
             cellQueue.add(endPoints);
             cellToIndexMap.put(endPoints, 0);
             queueSet.add(endPoints);
@@ -49,7 +45,7 @@ public class FloodFillSearchSolver extends Solver{
             queueSet.remove(c);
             for(VirtualCell neighbors : getUntraversedReachableNeighbors(c)){
                 boolean isAnEndpoint = false;
-                for(VirtualCell ep : this.getEndPoints()){
+                for(VirtualCell ep : endpoints){
                     if (neighbors.equals(ep)) {
                         isAnEndpoint = true;
                         break;
@@ -69,13 +65,10 @@ public class FloodFillSearchSolver extends Solver{
         }
         for(int i = 0; i < 16; i++){
             for(int j = 0; j < 16; j++){
-                if(intGrid[i][j] == 0 && !endPoints.contains(this.getVirtualGrid().getVirtualCell(i,j))){
+                if(intGrid[i][j] == 0 && !endpoints.contains(this.getVirtualGrid().getVirtualCell(i,j))){
                     intGrid[i][j] = 694;
                 }
             }
-        }
-        for(VirtualCell c : deadEnds){
-            intGrid[c.getyPos()][c.getxPos()] = 694;
         }
     }
 
@@ -118,7 +111,7 @@ public class FloodFillSearchSolver extends Solver{
         else{
             currentRealityCell.setTraversed(true);
             this.updateVirtualGrid(currentRealityCell);
-            this.fill();
+            this.fill(this.endPoints);
             int currentValue = intGrid[currentVirtualCell.getyPos()][currentVirtualCell.getxPos()];
             int currentXPos = currentVirtualCell.getxPos();
             int currentYPos = currentVirtualCell.getyPos();
@@ -198,13 +191,15 @@ public class FloodFillSearchSolver extends Solver{
         else{
             currentRealityCell.setTraversed(true);
             this.updateVirtualGrid(currentRealityCell);
-            this.fill();
+            ArrayList<VirtualCell> endpoint = new ArrayList<>();
+            endpoint.add(startPoint);
+            this.fill(endpoint);
             int currentValue = intGrid[currentVirtualCell.getyPos()][currentVirtualCell.getxPos()];
             int currentXPos = currentVirtualCell.getxPos();
             int currentYPos = currentVirtualCell.getyPos();
             boolean choseNext = false;
             if(currentYPos>0){
-                if(intGrid[currentYPos-1][currentXPos] == currentValue+1) {
+                if(intGrid[currentYPos-1][currentXPos] == currentValue-1) {
                     try {
                         if (this.getVirtualGrid().isTherePathBetweenVirtualCells(this.getVirtualGrid().getVirtualCell(currentXPos, currentYPos - 1), this.currentVirtualCell)) {
                             currentVirtualCell = this.getVirtualGrid().getVirtualCell(currentXPos, currentYPos - 1);
@@ -217,7 +212,7 @@ public class FloodFillSearchSolver extends Solver{
                 }
             }
             if(currentXPos>0 && !choseNext){
-                if(intGrid[currentYPos][currentXPos-1] == currentValue+1) {
+                if(intGrid[currentYPos][currentXPos-1] == currentValue-1) {
                     try {
                         if (this.getVirtualGrid().isTherePathBetweenVirtualCells(this.getVirtualGrid().getVirtualCell(currentXPos - 1, currentYPos), this.currentVirtualCell)) {
                             currentVirtualCell = this.getVirtualGrid().getVirtualCell(currentXPos - 1, currentYPos);
@@ -230,7 +225,7 @@ public class FloodFillSearchSolver extends Solver{
                 }
             }
             if(currentYPos<15 && !choseNext){
-                if(intGrid[currentYPos+1][currentXPos] == currentValue+1) {
+                if(intGrid[currentYPos+1][currentXPos] == currentValue-1) {
                     try {
                         if (this.getVirtualGrid().isTherePathBetweenVirtualCells(this.getVirtualGrid().getVirtualCell(currentXPos, currentYPos + 1), this.currentVirtualCell)) {
                             currentVirtualCell = this.getVirtualGrid().getVirtualCell(currentXPos, currentYPos + 1);
@@ -243,7 +238,7 @@ public class FloodFillSearchSolver extends Solver{
                 }
             }
             if(currentXPos<15 && !choseNext){
-                if(intGrid[currentYPos][currentXPos+1] == currentValue+1) {
+                if(intGrid[currentYPos][currentXPos+1] == currentValue-1) {
                     try {
                         if (this.getVirtualGrid().isTherePathBetweenVirtualCells(this.getVirtualGrid().getVirtualCell(currentXPos + 1, currentYPos), this.currentVirtualCell)) {
                             currentVirtualCell = this.getVirtualGrid().getVirtualCell(currentXPos + 1, currentYPos);
@@ -255,23 +250,19 @@ public class FloodFillSearchSolver extends Solver{
                     }
                 }
             }
-            if(!choseNext){
-                ArrayList<VirtualCell> reachableAdjacentCells = this.getVirtualGrid().getReachableAdjacentVirtualCells(this.currentVirtualCell);
-                if(whatever < 60) {
-                    System.out.println("the number of reachableAdjacentCells are " + reachableAdjacentCells.size());
-                    whatever++;
-                }
-                if(reachableAdjacentCells.size()==1){
-                    this.currentVirtualCell.addLeftBorder();
-                    this.currentVirtualCell.addTopBorder();
-                    this.currentVirtualCell.addRightBorder();
-                    this.currentVirtualCell.addBottomBorder();
-                    this.currentVirtualCell = reachableAdjacentCells.get(0);
-                }
-                else{
-                    this.currentVirtualCell = reachableAdjacentCells.get((int)(Math.random()*reachableAdjacentCells.size()));
-                }
-            }
+//            if(!choseNext){
+//                ArrayList<VirtualCell> reachableAdjacentCells = this.getVirtualGrid().getReachableAdjacentVirtualCells(this.currentVirtualCell);
+//                if(reachableAdjacentCells.size()==1){
+//                    this.currentVirtualCell.addLeftBorder();
+//                    this.currentVirtualCell.addTopBorder();
+//                    this.currentVirtualCell.addRightBorder();
+//                    this.currentVirtualCell.addBottomBorder();
+//                    this.currentVirtualCell = reachableAdjacentCells.get(0);
+//                }
+//                else{
+//                    this.currentVirtualCell = reachableAdjacentCells.get((int)(Math.random()*reachableAdjacentCells.size()));
+//                }
+//            }
             currentRealityCell = this.getRealityGrid().getRealityCell(currentVirtualCell.getxPos(), currentVirtualCell.getyPos());
         }
     }
