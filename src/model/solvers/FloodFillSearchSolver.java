@@ -28,45 +28,36 @@ public class FloodFillSearchSolver extends Solver{
     }
 
     public RealityCell getCurrentRealityCell() {return currentRealityCell;}
+
     public void fill(ArrayList<VirtualCell> endpoints){
         intGrid = new int[16][16];
-        this.getVirtualGrid().unSolveGrid();
-        Queue<VirtualCell> cellQueue = new LinkedList<>();
-        HashMap<VirtualCell, Integer> cellToIndexMap = new HashMap<>();
-        HashSet<VirtualCell> queueSet = new HashSet<>();
-        for(VirtualCell endPoints: endpoints){
-            cellQueue.add(endPoints);
-            cellToIndexMap.put(endPoints, 0);
-            queueSet.add(endPoints);
-        }
-        while(!cellQueue.isEmpty()){
-            VirtualCell c = cellQueue.poll();
-            c.setTraversed(true);
-            queueSet.remove(c);
-            for(VirtualCell neighbors : getUntraversedReachableNeighbors(c)){
-                boolean isAnEndpoint = false;
-                for(VirtualCell ep : endpoints){
-                    if (neighbors.equals(ep)) {
-                        isAnEndpoint = true;
-                        break;
-                    }
-                }
-                if(!isAnEndpoint){
-                    if(!queueSet.contains(neighbors)){
-                        cellQueue.add(neighbors);
-                        queueSet.add(neighbors);
-                        cellToIndexMap.put(neighbors, cellToIndexMap.get(c) + 1);
-                    }
-                }
+        for (int y = 0; y < 16; ++y) {
+            for (int x = 0; x < 16; ++x) {
+                intGrid[y][x] = 694;
             }
         }
-        for(Cell cell : cellToIndexMap.keySet()){
-            intGrid[cell.getyPos()][cell.getxPos()] = cellToIndexMap.get(cell);
+
+        Queue<VirtualCell> cellQueue = new LinkedList<>();
+        for (VirtualCell endPoints : endpoints){
+            cellQueue.add(endPoints);
+            intGrid[endPoints.getyPos()][endPoints.getxPos()] = 0;
         }
-        for(int i = 0; i < 16; i++){
-            for(int j = 0; j < 16; j++){
-                if(intGrid[i][j] == 0 && !endpoints.contains(this.getVirtualGrid().getVirtualCell(i,j))){
-                    intGrid[i][j] = 694;
+
+        while (!cellQueue.isEmpty()) {
+            VirtualCell currentCell = cellQueue.poll();
+            int newValue = intGrid[currentCell.getyPos()][currentCell.getxPos()] + 1;
+
+            for (VirtualCell neighborCell : getVirtualGrid().getAdjacentVirtualCells(currentCell)) {
+                try {
+                    if (!getVirtualGrid().isTherePathBetweenVirtualCells(currentCell, neighborCell)) continue;
+                } catch(Exception ignored) {}
+
+                final int neighborX = neighborCell.getxPos();
+                final int neighborY = neighborCell.getyPos();
+
+                if (newValue < intGrid[neighborY][neighborX]) {
+                    intGrid[neighborY][neighborX] = newValue;
+                    cellQueue.add(neighborCell);
                 }
             }
         }
