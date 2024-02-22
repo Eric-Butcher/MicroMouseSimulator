@@ -130,23 +130,6 @@ public class Grid<C extends Cell> {
         return adjacentCells;
     }
 
-    public ArrayList<C> getReachableAdjacentCells(C centerCell){
-        ArrayList<C> adjacentCells = this.getAdjacentCells(centerCell);
-        ArrayList<C> reachableAdjacentCells = new ArrayList<>();
-        //System.out.println(adjacentCells.size() + "is the number of the adjacent cells");
-        for(C cell : adjacentCells){
-            try {
-                if (this.isTherePathBetweenCells(cell, centerCell)) {
-                    reachableAdjacentCells.add(cell);
-                }
-            }
-            catch(Exception e){
-
-            }
-        }
-        return reachableAdjacentCells;
-    }
-
     public void unSolveGrid() {
         for (int i = 0; i < Constants.mazeLength; i++) {
             for (int j = 0; j < Constants.mazeLength; j++) {

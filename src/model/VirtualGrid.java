@@ -28,12 +28,4 @@ public class VirtualGrid {
     public ArrayList<VirtualCell> getAdjacentVirtualCells(VirtualCell centerCell){
         return grid.getAdjacentCells(centerCell);
     }
-
-    public ArrayList<VirtualCell> getReachableAdjacentVirtualCells(VirtualCell centerCell){
-        return grid.getReachableAdjacentCells(centerCell);
-    }
-
-    public void unSolveGrid(){
-        grid.unSolveGrid();
-    }
 }
