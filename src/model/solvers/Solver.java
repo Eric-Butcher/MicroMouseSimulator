@@ -17,6 +17,8 @@ public abstract class Solver {
     private final Grid grid;
     private boolean done = false;
 
+
+
     public Solver(Grid grid) {
         this.grid = grid;
         this.startPoint = this.grid.getCell(0, 0);
@@ -29,6 +31,28 @@ public abstract class Solver {
             ends.add(this.grid.getCell(Constants.maxCellIndex / 2 + 1, Constants.maxCellIndex / 2 + 1));
         } else {
             ends.add(this.grid.getCell(Constants.maxCellIndex / 2, Constants.maxCellIndex / 2));
+        }
+
+
+        this.endPoints = ends;
+
+        for (Cell cell : this.endPoints) {
+            cell.setGoal(true);
+        }
+    }
+
+    public Solver(Grid grid, int length) {
+        this.grid = grid;
+        this.startPoint = this.grid.getCell(0, 0);
+
+        ArrayList<Cell> ends = new ArrayList<>();
+        if ((length % 2) == 0) {
+            ends.add(this.grid.getCell(length / 2, length / 2));
+            ends.add(this.grid.getCell(length / 2 + 1, length / 2));
+            ends.add(this.grid.getCell(length / 2, length / 2 + 1));
+            ends.add(this.grid.getCell(length / 2 + 1, length / 2 + 1));
+        } else {
+            ends.add(this.grid.getCell(length / 2, length / 2));
         }
 
 
@@ -115,6 +139,18 @@ public abstract class Solver {
         ArrayList<Cell> traversedCells = getTraversedCells(adjacents);
         ArrayList<Cell> retVal = new ArrayList<>();
         for (Cell cell : traversedCells) {
+            if (Grid.isTherePathBetweenCells(center, cell)) {
+                retVal.add(cell);
+            }
+        }
+
+        return retVal;
+    }
+
+    public ArrayList<Cell> getAdjacentReachableNeighbors(Cell center) {
+        ArrayList<Cell> adjacents = this.grid.getAdjacentCells(center);
+        ArrayList<Cell> retVal = new ArrayList<>();
+        for (Cell cell : adjacents) {
             if (Grid.isTherePathBetweenCells(center, cell)) {
                 retVal.add(cell);
             }

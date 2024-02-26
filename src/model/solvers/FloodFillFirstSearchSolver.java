@@ -34,6 +34,10 @@ public class FloodFillFirstSearchSolver extends Solver {
         super(grid, startPoint, endPoints);
     }
 
+    public FloodFillFirstSearchSolver(Grid grid, int gridLength) {
+        super(grid, gridLength);
+    }
+
     public Cell getCurrentCell() {
         return currentCell;
     }
@@ -46,18 +50,29 @@ public class FloodFillFirstSearchSolver extends Solver {
         this.startStepDone = startStepDone;
     }
 
-    public void floodFillPuesdo(Cell cell) {
-        queue.add(cell);
+    //meant to start from the original
+    public void floodFillPuesdo(Cell currentCell) {
+        queue.add(currentCell);
+        this.getGrid().setAllCellValues(-1);
+        currentCell.setCellValue(0);
 
         while (!(queue.isEmpty())) {
 
             Cell cell_current_head = queue.remove();
-            ArrayList<Cell> list = this.getGrid().getAdjacentCells(cell_current_head); //command to get
-            for (Cell cell1 : list)
+            System.out.println("Current cell : X-pos: " + cell_current_head.getxPos() + " YPos: " + cell_current_head.getyPos() + " Cell Value = " + cell_current_head.getCellValue());
+
+            ArrayList<Cell> list = this.getAdjacentReachableNeighbors(cell_current_head); //command needed to get blank and accessible cells
+            for (Cell cell : list)
             {
-                cell1.setCellValue(cell_current_head.getCellValue()+ 1);
+                System.out.println("Current cell : X-pos: " + cell_current_head.getxPos() + " YPos: " + cell_current_head.getyPos() + " Cell Value = " + cell_current_head.getCellValue());
+
+
+                if (cell.getCellValue() == -1)
+                {
+                    cell.setCellValue(cell_current_head.getCellValue()+ 1);
+                    queue.add(cell);
+                }
             }
-            queue.addAll(list);
         }
     }
 

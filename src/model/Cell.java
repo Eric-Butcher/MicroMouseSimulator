@@ -17,7 +17,7 @@ public class Cell {
 
     private boolean isGoal = false;
 
-    private int cellValue = 0;
+    private int cellValue = -1; //the "blank" state
 
 
     public Cell(int xPos, int yPos) {
@@ -93,6 +93,21 @@ public class Cell {
     public void removeLeftBorder() {
         this.leftBorder = false;
     }
+
+    public void enableTopBorder() {
+        this.topBorder = true;
+    }
+    public void enableBottomBorder() {
+        this.bottomBorder = true;
+    }
+    public void enableLeftBorder() {
+        this.leftBorder = true;
+    }
+    public void enableRightBorder() {
+        this.rightBorder = true;
+    }
+
+
 
     public int getCellValue() {
         return this.cellValue;

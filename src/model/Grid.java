@@ -6,7 +6,10 @@ import java.util.ArrayList;
 import java.util.concurrent.ThreadLocalRandom;
 
 public class Grid {
-    private final Cell[][] cellGrid = new Cell[Constants.mazeLength][Constants.mazeLength];
+    private Cell[][] cellGrid = new Cell[Constants.mazeLength][Constants.mazeLength];
+    public int grid_length =  Constants.mazeLength;
+    public int grid_max_cell_index =Constants.maxCellIndex;
+
 
     public Grid() {
         for (int i = 0; i < 16; i++) {
@@ -15,6 +18,23 @@ public class Grid {
                 this.cellGrid[i][j] = cell;
             }
         }
+    }
+
+    public Grid(int width, int height) {
+        this.grid_length = width;
+        this.grid_max_cell_index = width - 1;
+        this.cellGrid = new Cell[width][height];
+        for (int i = 0; i < width; i++) {
+            for (int j = 0; j < height; j++) {
+                Cell cell = new Cell(i, j);
+                this.cellGrid[i][j] = cell;
+            }
+        }
+    }
+
+    public Cell[][] getCellGrid()
+    {
+        return this.cellGrid;
     }
 
     public static boolean isTherePathBetweenCells(Cell from, Cell to) {
@@ -34,7 +54,7 @@ public class Grid {
     }
 
     public Cell getCell(int xLoc, int yLoc) {
-        if (((xLoc < 0) || (xLoc > 16)) || ((yLoc < 0) || (yLoc > 16))) {
+        if (((xLoc < Constants.minCellIndex) || (xLoc > this.grid_max_cell_index)) || ((yLoc < Constants.minCellIndex) || (yLoc > this.grid_max_cell_index))) {
             throw new IllegalArgumentException("Gave location(s) outside of maze bounds. ");
         }
         return this.cellGrid[xLoc][yLoc];
@@ -51,7 +71,30 @@ public class Grid {
         return this.getCell(x, y);
     }
 
-    public void createPathBetweenCells(Cell from, Cell to) {
+    public void removeBorderForAllCells() {
+        for (int i = 0; i < this.grid_length; i++) {
+            for (int j = 0; j < this.grid_length; j++) {
+                this.cellGrid[i][j].removeBottomBorder();
+                this.cellGrid[i][j].removeTopBorder();
+                this.cellGrid[i][j].removeRightBorder();
+                this.cellGrid[i][j].removeLeftBorder();
+            }
+        }
+    }
+
+    public void borderToggle(int locx, int locy, String direction)
+    {
+        switch (direction) {
+            case "top" -> this.cellGrid[locx][locy].enableTopBorder();
+            case "bottom" -> this.cellGrid[locx][locy].enableBottomBorder();
+            case "left" -> this.cellGrid[locx][locy].enableLeftBorder();
+            case "right" -> this.cellGrid[locx][locy].enableRightBorder();
+            default -> System.out.println("error");
+        }
+    }
+
+
+        public void createPathBetweenCells(Cell from, Cell to) {
 
         int fromX = from.getxPos();
         int fromY = from.getyPos();
@@ -92,9 +135,9 @@ public class Grid {
                     newXIndex = centerX + xBump;
                     newYIndex = centerY + yBump;
                     if ((newXIndex >= Constants.minCellIndex) &&
-                            (newXIndex <= Constants.maxCellIndex) &&
+                            (newXIndex <= this.grid_max_cell_index) &&
                             (newYIndex >= Constants.minCellIndex) &&
-                            (newYIndex <= Constants.maxCellIndex)
+                            (newYIndex <= this.grid_max_cell_index)
                     ) {
                         Cell adjacent = this.getCell(newXIndex, newYIndex);
                         adjacentCells.add(adjacent);
@@ -108,8 +151,8 @@ public class Grid {
     }
 
     public void unSolveGrid() {
-        for (int i = 0; i < Constants.mazeLength; i++) {
-            for (int j = 0; j < Constants.mazeLength; j++) {
+        for (int i = 0; i < this.grid_length; i++) {
+            for (int j = 0; j < this.grid_length; j++) {
                 this.cellGrid[i][j].setTraversed(false);
                 this.cellGrid[i][j].setGoal(false);
             }
@@ -117,4 +160,16 @@ public class Grid {
 
     }
 
+    public void setSingularCellValue(int xLoc, int yLoc, int value) {
+        this.cellGrid[xLoc][yLoc].setCellValue(value);
+    }
+
+
+        public void setAllCellValues(int value) {
+        for (int i = 0; i <this.grid_length; i++) {
+            for (int j = 0; j < this.grid_length; j++) {
+                this.cellGrid[i][j].setCellValue(value);
+            }
+        }
+    }
 }
